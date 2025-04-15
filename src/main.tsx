@@ -25,6 +25,23 @@ const setupScrollObserver = () => {
     document.querySelectorAll('.fade-in-section').forEach((element) => {
       observer.observe(element);
     });
+    
+    // Add smooth scrolling behavior globally for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href')?.substring(1);
+        if (targetId) {
+          const targetElement = document.getElementById(targetId);
+          if (targetElement) {
+            targetElement.scrollIntoView({
+              behavior: 'smooth'
+            });
+          }
+        }
+      });
+    });
   } else {
     // Pour les utilisateurs qui préfèrent réduire les animations, on rend tout visible immédiatement
     document.querySelectorAll('.fade-in-section').forEach((element) => {
