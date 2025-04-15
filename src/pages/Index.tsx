@@ -1,31 +1,23 @@
-
 import { Link } from "react-router-dom";
 import { ArrowRight, Star, Heart, Droplet, Sun, User } from "lucide-react";
 import { ScrollObserver } from "@/components/ui/scroll-observer";
 import { EnergyButton } from "@/components/ui/energy-button";
 import { Button } from "@/components/ui/button";
-
 const Index = () => {
-  const testimonials = [
-    {
-      name: "Marie L.",
-      text: "Les séances de reiki m'ont apporté une sérénité que je n'avais pas ressentie depuis des années. Un vrai changement dans ma vie quotidienne.",
-      stars: 5,
-    },
-    {
-      name: "Jean P.",
-      text: "Le magnétisme a considérablement réduit mes douleurs chroniques. Je suis reconnaissant d'avoir découvert cette approche alternative.",
-      stars: 5,
-    },
-    {
-      name: "Sophie R.",
-      text: "Une expérience apaisante et régénératrice. La bienveillance et le professionnalisme du praticien m'ont mise en confiance dès la première séance.",
-      stars: 5,
-    },
-  ];
-
-  return (
-    <div className="overflow-hidden">
+  const testimonials = [{
+    name: "Marie L.",
+    text: "Les séances de reiki m'ont apporté une sérénité que je n'avais pas ressentie depuis des années. Un vrai changement dans ma vie quotidienne.",
+    stars: 5
+  }, {
+    name: "Jean P.",
+    text: "Le magnétisme a considérablement réduit mes douleurs chroniques. Je suis reconnaissant d'avoir découvert cette approche alternative.",
+    stars: 5
+  }, {
+    name: "Sophie R.",
+    text: "Une expérience apaisante et régénératrice. La bienveillance et le professionnalisme du praticien m'ont mise en confiance dès la première séance.",
+    stars: 5
+  }];
+  return <div className="overflow-hidden">
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 overflow-hidden">
         <div className="absolute inset-0 z-0">
@@ -71,11 +63,7 @@ const Index = () => {
               <ScrollObserver>
                 <div className="relative">
                   <div className="aspect-square rounded-full overflow-hidden border-4 border-energy-400/20">
-                    <img 
-                      src="https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?auto=format&fit=crop&q=80" 
-                      alt="Praticien en soins énergétiques" 
-                      className="w-full h-full object-cover"
-                    />
+                    <img alt="Praticien en soins énergétiques" className="w-full h-full object-cover" src="/lovable-uploads/884dbae3-5f72-4cf5-a892-be05a0c10757.png" />
                   </div>
                   <div className="absolute -bottom-4 -right-4 w-24 h-24 rounded-full bg-mystic-950 border-2 border-energy-400 flex items-center justify-center animate-pulse">
                     <User className="h-10 w-10 text-energy-400" />
@@ -177,11 +165,7 @@ const Index = () => {
             <ScrollObserver>
               <div className="relative">
                 <div className="aspect-[3/4] rounded-lg overflow-hidden">
-                  <img 
-                    src="https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?auto=format&fit=crop&q=80" 
-                    alt="Praticien en soins énergétiques" 
-                    className="w-full h-full object-cover"
-                  />
+                  <img alt="Praticien en soins énergétiques" className="w-full h-full object-cover" src="/lovable-uploads/74b4494b-c462-4a35-b492-16c7dd375d2d.jpg" />
                 </div>
                 <div className="absolute -bottom-6 -right-6 w-24 h-24 rounded-full bg-mystic-950 border-2 border-energy-400 flex items-center justify-center">
                   <span className="text-energy-400 font-cinzel text-lg">15+</span>
@@ -227,19 +211,15 @@ const Index = () => {
           </ScrollObserver>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map((testimonial, index) => (
-              <ScrollObserver key={index}>
+            {testimonials.map((testimonial, index) => <ScrollObserver key={index}>
                 <div className="bg-mystic-900/40 backdrop-blur-sm rounded-lg p-8 border border-mystic-800/30">
                   <div className="flex text-energy-400 mb-4">
-                    {[...Array(testimonial.stars)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 fill-energy-400" />
-                    ))}
+                    {[...Array(testimonial.stars)].map((_, i) => <Star key={i} className="h-5 w-5 fill-energy-400" />)}
                   </div>
                   <p className="text-gray-300 italic mb-6">"{testimonial.text}"</p>
                   <p className="text-energy-400 font-medium">{testimonial.name}</p>
                 </div>
-              </ScrollObserver>
-            ))}
+              </ScrollObserver>)}
           </div>
         </div>
       </section>
@@ -270,8 +250,6 @@ const Index = () => {
           </ScrollObserver>
         </div>
       </section>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
