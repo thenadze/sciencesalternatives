@@ -22,7 +22,7 @@ export function EnergyButton({
       )}
       {...props}
     >
-      <span className="relative z-10">{children}</span>
+      <div className="relative z-10">{children}</div>
       <span
         className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-300"
         style={{
