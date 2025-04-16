@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { ArrowRight, Calendar, Clock, Sun, Heart, Droplet } from "lucide-react";
@@ -103,10 +102,13 @@ const Appointment = () => {
     setIsSubmitting(true);
     
     try {
+      // Conversion de la date en string pour correspondre au schéma de la base de données
+      const formattedDate = format(data.appointment_date, 'yyyy-MM-dd');
+      
       const { error } = await supabase.from('appointments').insert({
         user_id: user.id,
         service: data.service,
-        appointment_date: data.appointment_date,
+        appointment_date: formattedDate,
         appointment_time: data.appointment_time,
         first_name: data.first_name,
         last_name: data.last_name,
