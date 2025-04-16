@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { ArrowRight, Star, Heart, Droplet, Sun, User } from "lucide-react";
 import { ScrollObserver } from "@/components/ui/scroll-observer";
@@ -212,7 +213,7 @@ const Index = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {testimonials.map((testimonial, index) => <ScrollObserver key={index}>
-                <div className="bg-mystic-900/40 backdrop-blur-sm rounded-lg p-8 border border-mystic-800/30">
+                <div className="bg-mystic-900/40 backdrop-blur-sm rounded-lg p-8 border border-mystic-800/30 transition-all duration-500 hover:transform hover:scale-105 hover:border-energy-400/50 hover:shadow-[0_0_15px_rgba(243,190,89,0.3)] hover:bg-mystic-800/50">
                   <div className="flex text-energy-400 mb-4">
                     {[...Array(testimonial.stars)].map((_, i) => <Star key={i} className="h-5 w-5 fill-energy-400" />)}
                   </div>
