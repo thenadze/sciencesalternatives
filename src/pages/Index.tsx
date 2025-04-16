@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { ArrowRight, Star, Heart, Droplet, Sun, User } from "lucide-react";
 import { ScrollObserver } from "@/components/ui/scroll-observer";
@@ -18,7 +17,8 @@ const Index = () => {
     text: "Une expérience apaisante et régénératrice. La bienveillance et le professionnalisme du praticien m'ont mise en confiance dès la première séance.",
     stars: 5
   }];
-  return <div className="overflow-hidden">
+  return (
+    <div className="overflow-hidden">
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 overflow-hidden">
         <div className="absolute inset-0 z-0">
@@ -212,15 +212,19 @@ const Index = () => {
           </ScrollObserver>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map((testimonial, index) => <ScrollObserver key={index}>
+            {testimonials.map((testimonial, index) => (
+              <ScrollObserver key={index}>
                 <div className="bg-mystic-900/40 backdrop-blur-sm rounded-lg p-8 border border-mystic-800/30 transition-all duration-500 hover:transform hover:scale-105 hover:border-energy-400/50 hover:shadow-[0_0_15px_rgba(243,190,89,0.3)] hover:bg-mystic-800/50">
                   <div className="flex text-energy-400 mb-4">
-                    {[...Array(testimonial.stars)].map((_, i) => <Star key={i} className="h-5 w-5 fill-energy-400" />)}
+                    {[...Array(testimonial.stars)].map((_, i) => (
+                      <Star key={i} className="h-5 w-5 fill-energy-400" />
+                    ))}
                   </div>
                   <p className="text-gray-300 italic mb-6">"{testimonial.text}"</p>
                   <p className="text-energy-400 font-medium">{testimonial.name}</p>
                 </div>
-              </ScrollObserver>)}
+              </ScrollObserver>
+            ))}
           </div>
         </div>
       </section>
@@ -229,18 +233,29 @@ const Index = () => {
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-6">
           <ScrollObserver>
-            <div className="bg-gradient-to-r from-mystic-900 to-mystic-800 rounded-xl p-8 md:p-12 relative overflow-hidden border border-mystic-700/30">
+            <div className="bg-gradient-to-r from-mystic-900 to-mystic-800 rounded-xl p-8 md:p-12 relative overflow-hidden border border-mystic-700/30 
+              transition-all duration-500 group 
+              hover:border-energy-400/50 
+              hover:shadow-[0_0_20px_rgba(243,190,89,0.4)]
+              hover:scale-[1.02]">
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-energy-400 to-soft-600"></div>
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(243,190,89,0.2),transparent_70%)]"></div>
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(243,190,89,0.2),transparent_70%)]
+                opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               
               <div className="relative z-10 text-center max-w-3xl mx-auto">
-                <h2 className="text-3xl md:text-4xl font-cinzel mb-6">
-                  Prêt à découvrir votre <span className="text-energy-400">potentiel énergétique</span> ?
+                <h2 className="text-3xl md:text-4xl font-cinzel mb-6 
+                  transition-colors duration-500 
+                  group-hover:text-energy-400">
+                  Prêt à découvrir votre <span className="text-energy-400 group-hover:text-white">potentiel énergétique</span> ?
                 </h2>
-                <p className="text-gray-300 mb-8">
+                <p className="text-gray-300 mb-8 
+                  transition-colors duration-500 
+                  group-hover:text-white/90">
                   Réservez dès maintenant votre séance de soins énergétiques et commencez votre voyage vers l'harmonie intérieure.
                 </p>
-                <EnergyButton asChild size="lg">
+                <EnergyButton asChild size="lg" 
+                  className="transition-all duration-500 
+                  group-hover:scale-105">
                   <Link to="/rendez-vous">
                     Prendre rendez-vous
                     <ArrowRight className="ml-2 h-4 w-4" />
@@ -251,6 +266,8 @@ const Index = () => {
           </ScrollObserver>
         </div>
       </section>
-    </div>;
+    </div>
+  );
 };
+
 export default Index;
