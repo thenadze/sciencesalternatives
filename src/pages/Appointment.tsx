@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { ArrowRight, Calendar, Clock, Sun, Heart, Droplet } from "lucide-react";
@@ -115,6 +116,7 @@ const Appointment = () => {
         email: data.email,
         phone: data.phone,
         message: data.message || '',
+        status: 'pending'
       });
       
       if (error) throw error;
