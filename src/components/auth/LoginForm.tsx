@@ -35,15 +35,15 @@ export const LoginForm = ({ onSubmit, onResetPassword, isLoading }: LoginFormPro
           control={form.control}
           name="email"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
+            <FormItem className="space-y-3">
+              <FormLabel className="text-gray-200">Email</FormLabel>
               <FormControl>
                 <div className="relative">
                   <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <Input 
                     {...field} 
                     placeholder="votre@email.com" 
-                    className="pl-10 bg-mystic-800/40 border-mystic-700/50" 
+                    className="pl-10 bg-mystic-800/40 border-mystic-700/50 hover:border-energy-400/50 transition-colors" 
                   />
                 </div>
               </FormControl>
@@ -55,16 +55,16 @@ export const LoginForm = ({ onSubmit, onResetPassword, isLoading }: LoginFormPro
           control={form.control}
           name="password"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Mot de passe</FormLabel>
+            <FormItem className="space-y-3">
+              <FormLabel className="text-gray-200">Mot de passe</FormLabel>
               <FormControl>
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <Input 
                     {...field} 
-                    type="password"
+                    type="password" 
                     placeholder="••••••••" 
-                    className="pl-10 bg-mystic-800/40 border-mystic-700/50" 
+                    className="pl-10 bg-mystic-800/40 border-mystic-700/50 hover:border-energy-400/50 transition-colors" 
                   />
                 </div>
               </FormControl>
@@ -72,14 +72,16 @@ export const LoginForm = ({ onSubmit, onResetPassword, isLoading }: LoginFormPro
             </FormItem>
           )}
         />
-        <Button 
-          variant="link" 
-          type="button" 
-          className="px-0 text-energy-400 hover:text-energy-300" 
-          onClick={onResetPassword}
-        >
-          Mot de passe oublié ?
-        </Button>
+        <div className="flex justify-between">
+          <Button 
+            variant="link" 
+            type="button" 
+            className="px-0 text-energy-400 hover:text-energy-300"
+            onClick={onResetPassword}
+          >
+            Mot de passe oublié ?
+          </Button>
+        </div>
         <EnergyButton 
           type="submit" 
           className="w-full" 

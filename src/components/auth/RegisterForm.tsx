@@ -38,15 +38,15 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
             control={form.control}
             name="firstName"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Prénom</FormLabel>
+              <FormItem className="space-y-3">
+                <FormLabel className="text-gray-200">Prénom</FormLabel>
                 <FormControl>
-                  <div className="relative">
-                    <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <div className="relative group">
+                    <User className="absolute left-3 top-3 h-4 w-4 text-gray-400 transition-colors group-hover:text-energy-400" />
                     <Input 
                       {...field} 
                       placeholder="Prénom" 
-                      className="pl-10 bg-mystic-800/40 border-mystic-700/50" 
+                      className="pl-10 bg-mystic-800/40 border-mystic-700/50 hover:border-energy-400/50 transition-colors" 
                     />
                   </div>
                 </FormControl>
@@ -58,15 +58,15 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
             control={form.control}
             name="lastName"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nom</FormLabel>
+              <FormItem className="space-y-3">
+                <FormLabel className="text-gray-200">Nom</FormLabel>
                 <FormControl>
-                  <div className="relative">
-                    <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <div className="relative group">
+                    <User className="absolute left-3 top-3 h-4 w-4 text-gray-400 transition-colors group-hover:text-energy-400" />
                     <Input 
                       {...field} 
                       placeholder="Nom" 
-                      className="pl-10 bg-mystic-800/40 border-mystic-700/50" 
+                      className="pl-10 bg-mystic-800/40 border-mystic-700/50 hover:border-energy-400/50 transition-colors" 
                     />
                   </div>
                 </FormControl>
@@ -79,15 +79,15 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
           control={form.control}
           name="email"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
+            <FormItem className="space-y-3">
+              <FormLabel className="text-gray-200">Email</FormLabel>
               <FormControl>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <div className="relative group">
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400 transition-colors group-hover:text-energy-400" />
                   <Input 
                     {...field} 
                     placeholder="votre@email.com" 
-                    className="pl-10 bg-mystic-800/40 border-mystic-700/50" 
+                    className="pl-10 bg-mystic-800/40 border-mystic-700/50 hover:border-energy-400/50 transition-colors" 
                   />
                 </div>
               </FormControl>
@@ -99,16 +99,16 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
           control={form.control}
           name="password"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Mot de passe</FormLabel>
+            <FormItem className="space-y-3">
+              <FormLabel className="text-gray-200">Mot de passe</FormLabel>
               <FormControl>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <div className="relative group">
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400 transition-colors group-hover:text-energy-400" />
                   <Input 
                     {...field} 
                     type="password"
                     placeholder="••••••••" 
-                    className="pl-10 bg-mystic-800/40 border-mystic-700/50" 
+                    className="pl-10 bg-mystic-800/40 border-mystic-700/50 hover:border-energy-400/50 transition-colors" 
                   />
                 </div>
               </FormControl>

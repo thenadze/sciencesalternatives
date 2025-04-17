@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { RegisterForm } from "@/components/auth/RegisterForm";
 import { ResetPasswordForm } from "@/components/auth/ResetPasswordForm";
+import { Card, CardContent } from "@/components/ui/card";
 
 type AuthMode = "login" | "register" | "resetPassword";
 
@@ -55,22 +56,22 @@ const Auth = () => {
   }
 
   return (
-    <div className="overflow-hidden">
-      {/* Hero Section */}
+    <div className="min-h-screen overflow-hidden bg-gradient-to-br from-mystic-900 via-mystic-950 to-black">
+      {/* Hero Section with enhanced visuals */}
       <section className="relative py-16 md:py-24 overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-mystic-950 opacity-80"></div>
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-30 mix-blend-overlay"></div>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(243,190,89,0.1),transparent_60%)]"></div>
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-mystic-900/90 to-black/95"></div>
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-20 mix-blend-overlay"></div>
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(243,190,89,0.2),transparent_60%)]"></div>
         </div>
 
         <div className="container relative z-10 mx-auto px-6">
           <ScrollObserver>
-            <h1 className="text-4xl md:text-5xl font-cinzel mb-6 text-white text-center leading-tight">
+            <h1 className="text-4xl md:text-6xl font-cinzel mb-6 text-white text-center leading-tight animate-fade-in">
               {authMode === "login" ? "Connexion" : 
                authMode === "register" ? "Inscription" : "Réinitialiser le mot de passe"}
             </h1>
-            <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto text-center">
+            <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto text-center animate-fade-in opacity-90">
               {authMode === "login" 
                 ? "Accédez à votre espace personnel pour gérer vos rendez-vous" 
                 : authMode === "register"
@@ -81,57 +82,69 @@ const Auth = () => {
         </div>
       </section>
 
-      {/* Auth Form Section */}
+      {/* Auth Form Section with enhanced visuals */}
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-6">
           <ScrollObserver>
-            <div className="max-w-md mx-auto bg-mystic-900/40 backdrop-blur-sm rounded-lg p-8 border border-mystic-800/30">
-              {authMode !== "resetPassword" && (
-                <div className="flex justify-center mb-8">
-                  <div className="flex rounded-md overflow-hidden">
-                    <Button
-                      type="button"
-                      variant={authMode === "login" ? "default" : "outline"}
-                      className={`px-6 ${authMode === "login" ? 'bg-energy-400 text-black' : ''}`}
-                      onClick={() => setAuthMode("login")}
-                    >
-                      Connexion
-                    </Button>
-                    <Button
-                      type="button"
-                      variant={authMode === "register" ? "default" : "outline"}
-                      className={`px-6 ${authMode === "register" ? 'bg-energy-400 text-black' : ''}`}
-                      onClick={() => setAuthMode("register")}
-                    >
-                      Inscription
-                    </Button>
+            <Card className="max-w-md mx-auto overflow-hidden bg-mystic-900/40 backdrop-blur-sm border border-mystic-800/30 shadow-xl hover:shadow-energy-400/5 transition-all duration-500">
+              <CardContent className="p-8">
+                {authMode !== "resetPassword" && (
+                  <div className="flex justify-center mb-8 animate-fade-in">
+                    <div className="flex rounded-md overflow-hidden">
+                      <Button
+                        type="button"
+                        variant={authMode === "login" ? "default" : "outline"}
+                        className={`px-6 transition-all duration-300 ${
+                          authMode === "login" 
+                            ? 'bg-gradient-to-r from-energy-400 to-energy-500 text-black shadow-lg hover:shadow-energy-400/50' 
+                            : 'hover:bg-energy-400/10'
+                        }`}
+                        onClick={() => setAuthMode("login")}
+                      >
+                        Connexion
+                      </Button>
+                      <Button
+                        type="button"
+                        variant={authMode === "register" ? "default" : "outline"}
+                        className={`px-6 transition-all duration-300 ${
+                          authMode === "register" 
+                            ? 'bg-gradient-to-r from-energy-400 to-energy-500 text-black shadow-lg hover:shadow-energy-400/50' 
+                            : 'hover:bg-energy-400/10'
+                        }`}
+                        onClick={() => setAuthMode("register")}
+                      >
+                        Inscription
+                      </Button>
+                    </div>
                   </div>
+                )}
+
+                <div className="animate-fade-in">
+                  {authMode === "login" && (
+                    <LoginForm 
+                      onSubmit={handleLogin}
+                      onResetPassword={() => setAuthMode("resetPassword")}
+                      isLoading={authLoading}
+                    />
+                  )}
+
+                  {authMode === "register" && (
+                    <RegisterForm
+                      onSubmit={handleRegister}
+                      isLoading={authLoading}
+                    />
+                  )}
+
+                  {authMode === "resetPassword" && (
+                    <ResetPasswordForm
+                      onSubmit={handleResetPassword}
+                      onBack={() => setAuthMode("login")}
+                      isLoading={authLoading}
+                    />
+                  )}
                 </div>
-              )}
-
-              {authMode === "login" && (
-                <LoginForm 
-                  onSubmit={handleLogin}
-                  onResetPassword={() => setAuthMode("resetPassword")}
-                  isLoading={authLoading}
-                />
-              )}
-
-              {authMode === "register" && (
-                <RegisterForm
-                  onSubmit={handleRegister}
-                  isLoading={authLoading}
-                />
-              )}
-
-              {authMode === "resetPassword" && (
-                <ResetPasswordForm
-                  onSubmit={handleResetPassword}
-                  onBack={() => setAuthMode("login")}
-                  isLoading={authLoading}
-                />
-              )}
-            </div>
+              </CardContent>
+            </Card>
           </ScrollObserver>
         </div>
       </section>
