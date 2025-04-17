@@ -1,10 +1,10 @@
 
 import { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useSearchParams } from "react-router-dom";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, Lock, Mail, User } from "lucide-react";
+import { ArrowRight, Lock, Mail, User, Loader2 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { ScrollObserver } from "@/components/ui/scroll-observer";
 import { EnergyButton } from "@/components/ui/energy-button";
@@ -31,9 +31,18 @@ const registerSchema = z.object({
   password: z.string().min(6, "Le mot de passe doit contenir au moins 6 caractères"),
 });
 
+const resetPasswordSchema = z.object({
+  email: z.string().email("Email invalide"),
+});
+
+type AuthMode = "login" | "register" | "resetPassword";
+
 const Auth = () => {
-  const { user, isLoading, signIn, signUp } = useAuth();
-  const [isLogin, setIsLogin] = useState(true);
+  const { user, isLoading: authStateLoading, signIn, signUp, resetPassword } = useAuth();
+  const [searchParams] = useSearchParams();
+  const [authMode, setAuthMode] = useState<AuthMode>(
+    searchParams.get("reset") ? "resetPassword" : "login"
+  );
   const [authLoading, setAuthLoading] = useState(false);
 
   const loginForm = useForm<z.infer<typeof loginSchema>>({
@@ -54,10 +63,19 @@ const Auth = () => {
     },
   });
 
+  const resetPasswordForm = useForm<z.infer<typeof resetPasswordSchema>>({
+    resolver: zodResolver(resetPasswordSchema),
+    defaultValues: {
+      email: "",
+    },
+  });
+
   const onLoginSubmit = async (values: z.infer<typeof loginSchema>) => {
     setAuthLoading(true);
     try {
       await signIn(values.email, values.password);
+    } catch (error) {
+      console.error("Login error:", error);
     } finally {
       setAuthLoading(false);
     }
@@ -67,14 +85,27 @@ const Auth = () => {
     setAuthLoading(true);
     try {
       await signUp(values.email, values.password, values.firstName, values.lastName);
-      setIsLogin(true);
+      // Don't auto-switch to login, let the user see the success message
+    } catch (error) {
+      console.error("Registration error:", error);
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const onResetPasswordSubmit = async (values: z.infer<typeof resetPasswordSchema>) => {
+    setAuthLoading(true);
+    try {
+      await resetPassword(values.email);
+      // After sending reset email, switch back to login
+      setAuthMode("login");
     } finally {
       setAuthLoading(false);
     }
   };
 
   // Rediriger vers la page d'accueil si l'utilisateur est connecté
-  if (user && !isLoading) {
+  if (user && !authStateLoading) {
     return <Navigate to="/" />;
   }
 
@@ -91,12 +122,15 @@ const Auth = () => {
         <div className="container relative z-10 mx-auto px-6">
           <ScrollObserver>
             <h1 className="text-4xl md:text-5xl font-cinzel mb-6 text-white text-center leading-tight">
-              {isLogin ? "Connexion" : "Inscription"}
+              {authMode === "login" ? "Connexion" : 
+               authMode === "register" ? "Inscription" : "Réinitialiser le mot de passe"}
             </h1>
             <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto text-center">
-              {isLogin 
+              {authMode === "login" 
                 ? "Accédez à votre espace personnel pour gérer vos rendez-vous" 
-                : "Créez votre compte pour bénéficier de nos services personnalisés"}
+                : authMode === "register"
+                ? "Créez votre compte pour bénéficier de nos services personnalisés"
+                : "Entrez votre email pour recevoir un lien de réinitialisation"}
             </p>
           </ScrollObserver>
         </div>
@@ -111,24 +145,24 @@ const Auth = () => {
                 <div className="flex rounded-md overflow-hidden">
                   <Button
                     type="button"
-                    variant={isLogin ? "default" : "outline"}
-                    className={`px-6 ${isLogin ? 'bg-energy-400 text-black' : ''}`}
-                    onClick={() => setIsLogin(true)}
+                    variant={authMode === "login" ? "default" : "outline"}
+                    className={`px-6 ${authMode === "login" ? 'bg-energy-400 text-black' : ''}`}
+                    onClick={() => setAuthMode("login")}
                   >
                     Connexion
                   </Button>
                   <Button
                     type="button"
-                    variant={!isLogin ? "default" : "outline"}
-                    className={`px-6 ${!isLogin ? 'bg-energy-400 text-black' : ''}`}
-                    onClick={() => setIsLogin(false)}
+                    variant={authMode === "register" ? "default" : "outline"}
+                    className={`px-6 ${authMode === "register" ? 'bg-energy-400 text-black' : ''}`}
+                    onClick={() => setAuthMode("register")}
                   >
                     Inscription
                   </Button>
                 </div>
               </div>
 
-              {isLogin ? (
+              {authMode === "login" ? (
                 <Form {...loginForm}>
                   <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-6">
                     <FormField
@@ -172,17 +206,34 @@ const Auth = () => {
                         </FormItem>
                       )}
                     />
+                    <Button 
+                      variant="link" 
+                      type="button" 
+                      className="px-0 text-energy-400 hover:text-energy-300" 
+                      onClick={() => setAuthMode("resetPassword")}
+                    >
+                      Mot de passe oublié ?
+                    </Button>
                     <EnergyButton 
                       type="submit" 
                       className="w-full" 
                       disabled={authLoading}
                     >
-                      {authLoading ? "Connexion en cours..." : "Se connecter"}
-                      <ArrowRight className="ml-2 h-4 w-4" />
+                      {authLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Connexion en cours...
+                        </>
+                      ) : (
+                        <>
+                          Se connecter
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </>
+                      )}
                     </EnergyButton>
                   </form>
                 </Form>
-              ) : (
+              ) : authMode === "register" ? (
                 <Form {...registerForm}>
                   <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-6">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -273,8 +324,69 @@ const Auth = () => {
                       className="w-full" 
                       disabled={authLoading}
                     >
-                      {authLoading ? "Inscription en cours..." : "S'inscrire"}
-                      <ArrowRight className="ml-2 h-4 w-4" />
+                      {authLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Inscription en cours...
+                        </>
+                      ) : (
+                        <>
+                          S'inscrire
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </>
+                      )}
+                    </EnergyButton>
+                  </form>
+                </Form>
+              ) : (
+                <Form {...resetPasswordForm}>
+                  <form onSubmit={resetPasswordForm.handleSubmit(onResetPasswordSubmit)} className="space-y-6">
+                    <FormField
+                      control={resetPasswordForm.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                              <Input 
+                                {...field} 
+                                placeholder="votre@email.com" 
+                                className="pl-10 bg-mystic-800/40 border-mystic-700/50" 
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="flex justify-between">
+                      <Button 
+                        variant="link" 
+                        type="button" 
+                        className="px-0 text-energy-400 hover:text-energy-300"
+                        onClick={() => setAuthMode("login")}
+                      >
+                        Retour à la connexion
+                      </Button>
+                    </div>
+                    <EnergyButton 
+                      type="submit" 
+                      className="w-full" 
+                      disabled={authLoading}
+                    >
+                      {authLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Envoi en cours...
+                        </>
+                      ) : (
+                        <>
+                          Envoyer le lien
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </>
+                      )}
                     </EnergyButton>
                   </form>
                 </Form>
