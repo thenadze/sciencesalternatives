@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { RegisterForm } from "@/components/auth/RegisterForm";
 import { ResetPasswordForm } from "@/components/auth/ResetPasswordForm";
+import { ExportEmailsButton } from "@/components/auth/ExportEmailsButton";
 import { Card, CardContent } from "@/components/ui/card";
 
 type AuthMode = "login" | "register" | "resetPassword";
@@ -67,10 +68,13 @@ const Auth = () => {
 
         <div className="container relative z-10 mx-auto px-6">
           <ScrollObserver>
-            <h1 className="text-4xl md:text-6xl font-cinzel mb-6 text-white text-center leading-tight animate-fade-in">
-              {authMode === "login" ? "Connexion" : 
-               authMode === "register" ? "Inscription" : "Réinitialiser le mot de passe"}
-            </h1>
+            <div className="flex justify-between items-center mb-6">
+              <h1 className="text-4xl md:text-6xl font-cinzel text-white leading-tight animate-fade-in">
+                {authMode === "login" ? "Connexion" : 
+                 authMode === "register" ? "Inscription" : "Réinitialiser le mot de passe"}
+              </h1>
+              {user && <ExportEmailsButton />}
+            </div>
             <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto text-center animate-fade-in opacity-90">
               {authMode === "login" 
                 ? "Accédez à votre espace personnel pour gérer vos rendez-vous" 
