@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { ScrollObserver } from "@/components/ui/scroll-observer";
 import { EnergyButton } from "@/components/ui/energy-button";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 
 export function HeroSection() {
   const [isVisible, setIsVisible] = useState(false);
+  const [isButtonAnimated, setIsButtonAnimated] = useState(false);
   
   useEffect(() => {
     // Set a small timeout to trigger the animations after component mount
@@ -15,7 +16,15 @@ export function HeroSection() {
       setIsVisible(true);
     }, 100);
     
-    return () => clearTimeout(timer);
+    // Set a timer for the button animation to start after the other elements
+    const buttonTimer = setTimeout(() => {
+      setIsButtonAnimated(true);
+    }, 1000);
+    
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(buttonTimer);
+    };
   }, []);
   
   return (
@@ -42,12 +51,28 @@ export function HeroSection() {
           <div 
             className={`flex flex-col sm:flex-row items-center justify-center gap-4 transition-all duration-700 ease-out delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
           >
-            <EnergyButton asChild size="lg">
-              <Link to="/rendez-vous">
-                Prendre rendez-vous
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </EnergyButton>
+            <div 
+              className={`relative transition-all duration-1000 ${isButtonAnimated ? 'scale-105' : 'scale-100'}`}
+            >
+              {/* Background glow effect */}
+              <div 
+                className={`absolute inset-0 bg-energy-400/20 blur-xl rounded-full transition-opacity duration-1000 ${isButtonAnimated ? 'opacity-70 animate-pulse-glow' : 'opacity-0'}`} 
+              />
+              
+              <EnergyButton 
+                asChild 
+                size="lg" 
+                animatedPulse={true} 
+                className="relative z-10 shadow-lg shadow-energy-400/30 border-2 border-energy-400 px-8 py-6 text-lg font-bold"
+              >
+                <Link to="/rendez-vous" className="flex items-center">
+                  <Sparkles className="mr-2 h-5 w-5 animate-pulse-glow" />
+                  Prendre rendez-vous
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </EnergyButton>
+            </div>
+            
             <Button variant="outline" size="lg" asChild className="border-energy-400/50 text-energy-400 hover:bg-energy-400/10">
               <Link to="/services">
                 Découvrir nos soins
