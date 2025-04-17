@@ -1,5 +1,9 @@
 import { ScrollObserver } from "@/components/ui/scroll-observer";
-import { Award, BookOpen, Heart, Star, Users } from "lucide-react";
+import { BookOpen, Heart, Star, Users } from "lucide-react";
+import { HeroSection } from "@/components/about/HeroSection";
+import { JourneySection } from "@/components/about/JourneySection";
+import { QualificationCard } from "@/components/about/QualificationCard";
+import { ValueCard } from "@/components/about/ValueCard";
 
 const About = () => {
   const qualifications = [
@@ -55,67 +59,8 @@ const About = () => {
 
   return (
     <div className="overflow-hidden">
-      {/* Hero Section */}
-      <section className="relative py-20 md:py-28 overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-mystic-950 opacity-80"></div>
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-40 mix-blend-overlay"></div>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(243,190,89,0.1),transparent_60%)]"></div>
-        </div>
-
-        <div className="container relative z-10 mx-auto px-6">
-          <ScrollObserver>
-            <h1 className="text-4xl md:text-5xl font-cinzel mb-6 text-white text-center leading-tight">
-              À propos de <span className="text-energy-400">votre praticien</span>
-            </h1>
-            <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto text-center">
-              Un parcours dédié à l'harmonie énergétique et au bien-être des personnes
-            </p>
-          </ScrollObserver>
-        </div>
-      </section>
-
-      {/* Personal Journey */}
-      <section className="py-16 md:py-20">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <ScrollObserver>
-              <div className="text-center md:text-left">
-                <h2 className="text-3xl font-cinzel mb-6">
-                  Mon <span className="text-energy-400">parcours</span>
-                </h2>
-                <p className="text-gray-300 mb-4">
-                  Passionné par les sciences énergétiques depuis plus de 15 ans, mon chemin vers ces pratiques a commencé après une expérience personnelle transformatrice qui m'a ouvert aux possibilités de guérison au-delà de l'approche conventionnelle.
-                </p>
-                <p className="text-gray-400 mb-4">
-                  Après des années dans un environnement professionnel exigeant, j'ai ressenti le besoin de me reconnecter à l'essentiel et d'explorer les dimensions subtiles de l'être humain. Cette quête m'a conduit à étudier différentes traditions énergétiques à travers le monde.
-                </p>
-                <p className="text-gray-400">
-                  Aujourd'hui, je combine ces connaissances pour offrir une approche holistique et personnalisée, adaptée aux besoins uniques de chaque personne que j'accompagne vers l'équilibre et le bien-être.
-                </p>
-              </div>
-            </ScrollObserver>
-
-            <ScrollObserver>
-              <div className="relative">
-                <div className="aspect-square rounded-lg overflow-hidden">
-                  <img 
-                    src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&q=80" 
-                    alt="Parcours du praticien" 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="absolute -top-4 -left-4 bg-mystic-950 p-4 rounded-lg border border-energy-400/30">
-                  <Award className="h-10 w-10 text-energy-400" />
-                </div>
-                <div className="absolute -bottom-4 -right-4 bg-mystic-950 p-4 rounded-lg border border-energy-400/30">
-                  <Heart className="h-10 w-10 text-energy-400" />
-                </div>
-              </div>
-            </ScrollObserver>
-          </div>
-        </div>
-      </section>
+      <HeroSection />
+      <JourneySection />
 
       {/* Qualifications */}
       <section className="py-16 md:py-20 bg-mystic-950/70">
@@ -135,20 +80,11 @@ const About = () => {
             <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-0.5 bg-energy-400/20"></div>
             <div className="space-y-10">
               {qualifications.map((qualification, index) => (
-                <ScrollObserver key={index}>
-                  <div className={`relative flex ${index % 2 === 0 ? 'md:flex-row-reverse' : ''}`}>
-                    <div className="md:w-1/2 flex justify-center md:px-10">
-                      <div className="bg-mystic-900/60 backdrop-blur-sm p-6 rounded-lg border border-mystic-800/50 md:w-[90%]">
-                        <div className="font-cinzel text-energy-400 text-lg mb-1">{qualification.title}</div>
-                        <div className="text-gray-400 mb-1">{qualification.institution}</div>
-                        <div className="text-gray-500 text-sm">{qualification.year}</div>
-                      </div>
-                    </div>
-                    <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center">
-                      <div className="w-6 h-6 rounded-full bg-mystic-950 border-2 border-energy-400"></div>
-                    </div>
-                  </div>
-                </ScrollObserver>
+                <QualificationCard 
+                  key={index}
+                  {...qualification}
+                  index={index}
+                />
               ))}
             </div>
           </div>
@@ -171,15 +107,7 @@ const About = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, index) => (
-              <ScrollObserver key={index}>
-                <div className="bg-mystic-900/40 backdrop-blur-sm rounded-lg p-6 border border-mystic-800/30 hover:border-energy-400/30 transition-colors duration-300">
-                  <div className="w-12 h-12 rounded-full bg-mystic-950 flex items-center justify-center mb-4 border border-energy-400/30">
-                    {value.icon}
-                  </div>
-                  <h3 className="text-xl font-cinzel mb-3 text-white">{value.title}</h3>
-                  <p className="text-gray-400">{value.description}</p>
-                </div>
-              </ScrollObserver>
+              <ValueCard key={index} {...value} />
             ))}
           </div>
         </div>
