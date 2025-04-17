@@ -3,6 +3,7 @@ import { ArrowRight, Star, Heart, Droplet, Sun, User } from "lucide-react";
 import { ScrollObserver } from "@/components/ui/scroll-observer";
 import { EnergyButton } from "@/components/ui/energy-button";
 import { Button } from "@/components/ui/button";
+
 const Index = () => {
   const testimonials = [{
     name: "Marie L.",
@@ -253,14 +254,22 @@ const Index = () => {
                   group-hover:text-white/90">
                   Réservez dès maintenant votre séance de soins énergétiques et commencez votre voyage vers l'harmonie intérieure.
                 </p>
-                <EnergyButton asChild size="lg" 
-                  className="transition-all duration-500 
-                  group-hover:scale-105">
-                  <Link to="/rendez-vous">
-                    Prendre rendez-vous
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </EnergyButton>
+                <div className="relative inline-block">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-energy-400 via-soft-600 to-energy-400 rounded-lg blur-md opacity-70 group-hover:opacity-100 animate-pulse transition-opacity duration-500"></div>
+                  <EnergyButton 
+                    asChild 
+                    size="lg"
+                    animatedPulse={true}
+                    className="relative px-8 py-4 text-lg font-medium transition-all duration-500 
+                      shadow-[0_0_10px_rgba(243,190,89,0.3)]
+                      group-hover:shadow-[0_0_20px_rgba(243,190,89,0.7)]
+                      hover:scale-105 hover:brightness-110">
+                    <Link to="/rendez-vous" className="flex items-center justify-center">
+                      Prendre rendez-vous
+                      <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+                    </Link>
+                  </EnergyButton>
+                </div>
               </div>
             </div>
           </ScrollObserver>
