@@ -1,4 +1,3 @@
-
 import { ScrollObserver } from "@/components/ui/scroll-observer";
 import { Award, BookOpen, Heart, Star, Users } from "lucide-react";
 
@@ -81,7 +80,7 @@ const About = () => {
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <ScrollObserver>
-              <div>
+              <div className="text-center md:text-left">
                 <h2 className="text-3xl font-cinzel mb-6">
                   Mon <span className="text-energy-400">parcours</span>
                 </h2>
