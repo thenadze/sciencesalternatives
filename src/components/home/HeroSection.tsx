@@ -4,8 +4,20 @@ import { ArrowRight } from "lucide-react";
 import { ScrollObserver } from "@/components/ui/scroll-observer";
 import { EnergyButton } from "@/components/ui/energy-button";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 
 export function HeroSection() {
+  const [isVisible, setIsVisible] = useState(false);
+  
+  useEffect(() => {
+    // Set a small timeout to trigger the animations after component mount
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, []);
+  
   return (
     <section className="relative py-20 md:py-32 overflow-hidden">
       <div className="absolute inset-0 z-0">
@@ -15,15 +27,21 @@ export function HeroSection() {
       </div>
 
       <div className="container relative z-10 mx-auto px-6 text-center">
-        <ScrollObserver>
-          <h1 className="text-4xl md:text-6xl font-cinzel mb-6 text-white leading-tight">
+        <div>
+          <h1 
+            className={`text-4xl md:text-6xl font-cinzel mb-6 text-white leading-tight transition-all duration-700 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+          >
             Révélez votre <span className="text-energy-400">énergie</span> intérieure
           </h1>
-          <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-10">
+          <p 
+            className={`text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-10 transition-all duration-700 ease-out delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+          >
             Des soins énergétiques personnalisés pour harmoniser votre corps et votre esprit. 
             Découvrez le pouvoir du Reiki et du Magnétisme.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div 
+            className={`flex flex-col sm:flex-row items-center justify-center gap-4 transition-all duration-700 ease-out delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+          >
             <EnergyButton asChild size="lg">
               <Link to="/rendez-vous">
                 Prendre rendez-vous
@@ -36,7 +54,7 @@ export function HeroSection() {
               </Link>
             </Button>
           </div>
-        </ScrollObserver>
+        </div>
       </div>
 
       <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-mystic-950 to-transparent"></div>
