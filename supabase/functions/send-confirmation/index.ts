@@ -42,6 +42,7 @@ const handler = async (req: Request): Promise<Response> => {
     const { firstName, email }: WelcomeEmailRequest = await req.json();
     
     if (!firstName || !email) {
+      console.error("Données manquantes:", { firstName, email });
       return new Response(
         JSON.stringify({ error: "Le prénom et l'email sont requis" }),
         {
@@ -54,6 +55,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`Tentative d'envoi d'email à ${email} pour ${firstName}`);
 
     // Envoi de l'email via Resend
+    // Utilisation de l'adresse par défaut fournie par Resend
     const emailResponse = await resend.emails.send({
       from: "Lovable <onboarding@resend.dev>",
       to: [email],

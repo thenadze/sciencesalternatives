@@ -104,7 +104,7 @@
     background-color: rgba(58, 56, 160, 0.5);
   }
   
-  /* Nouvelle animation pour les icônes */
+  /* Animation améliorée pour les icônes */
   svg {
     transition: all 0.4s ease;
   }
@@ -114,12 +114,13 @@
   .icon-hover:hover svg {
     color: theme('colors.energy.400');
     filter: drop-shadow(0 0 8px theme('colors.energy.400'));
-    transform: scale(1.15);
+    transform: scale(1.15) rotate(5deg);
   }
 
   /* Animation d'aura pour les icônes interactives */
   .icon-aura {
     position: relative;
+    overflow: hidden;
   }
   
   .icon-aura::after {
@@ -140,7 +141,41 @@
   .icon-aura:hover::after {
     width: 200%;
     height: 200%;
-    opacity: 0.15;
+    opacity: 0.2;
+  }
+  
+  /* Effet de traînée mystique pour les icônes */
+  button:hover svg,
+  a:hover svg,
+  .icon-hover:hover svg {
+    position: relative;
+  }
+  
+  button:hover svg::before,
+  a:hover svg::before,
+  .icon-hover:hover svg::before {
+    content: "";
+    position: absolute;
+    inset: -5px;
+    background: linear-gradient(45deg, theme('colors.energy.400'), theme('colors.mystic.700'));
+    filter: blur(15px);
+    opacity: 0;
+    z-index: -1;
+    animation: mystical-trail 2s ease-out;
+  }
+  
+  @keyframes mystical-trail {
+    0% {
+      opacity: 0.5;
+      transform: translateY(0) scale(0.3);
+    }
+    50% {
+      opacity: 0.3;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-20px) scale(1.8);
+    }
   }
   
   @keyframes pulse {
