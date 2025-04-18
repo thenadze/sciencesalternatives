@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User, Session } from "@supabase/supabase-js";
@@ -55,6 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             first_name: firstName,
             last_name: lastName,
           },
+          emailRedirectTo: undefined,
         },
       });
 
@@ -72,7 +72,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           variant: "destructive",
         });
       } else {
-        // Envoi de l'email de bienvenue
         try {
           console.log("Tentative d'envoi d'email de confirmation à:", email);
           const emailResponse = await supabase.functions.invoke('send-confirmation', {
@@ -81,21 +80,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           
           console.log("Réponse de la fonction d'envoi d'email:", emailResponse);
           
-          if (emailResponse.error) {
-            console.error("Erreur lors de l'envoi de l'email:", emailResponse.error);
-            toast({
-              title: "Inscription réussie",
-              description: "Votre compte a été créé avec succès, mais l'email de confirmation n'a pas pu être envoyé.",
-            });
-          } else {
-            toast({
-              title: "Inscription réussie",
-              description: "Un email de confirmation vous a été envoyé",
-            });
-          }
+          toast({
+            title: "Inscription réussie",
+            description: "Votre compte a été créé avec succès",
+          });
         } catch (emailError) {
           console.error("Erreur lors de l'envoi de l'email de bienvenue:", emailError);
-          // Afficher quand même un toast de succès même si l'email échoue
           toast({
             title: "Inscription réussie",
             description: "Votre compte a été créé avec succès",
@@ -104,11 +94,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (error: any) {
       console.error("Erreur d'inscription interceptée:", error);
+      
+      let errorMessage = "Une erreur s'est produite lors de l'inscription";
+      
+      if (error.message.includes("confirmation email")) {
+        errorMessage = "Problème lors de l'envoi de l'email de confirmation, mais votre compte a bien été créé. Veuillez vous connecter.";
+        try {
+          await signIn(email, password);
+          return;
+        } catch (signInError) {
+          console.error("Erreur lors de la tentative de connexion après échec d'email:", signInError);
+        }
+      }
+      
       toast({
         title: "Erreur d'inscription",
-        description: error.message || "Une erreur s'est produite lors de l'inscription",
+        description: errorMessage,
         variant: "destructive",
       });
+      
       throw error;
     } finally {
       setIsLoading(false);

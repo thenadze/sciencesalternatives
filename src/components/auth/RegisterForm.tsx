@@ -30,9 +30,18 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
     },
   });
 
+  const handleSubmit = async (values: z.infer<typeof registerSchema>) => {
+    try {
+      await onSubmit(values);
+    } catch (error) {
+      console.error("Erreur dans le formulaire:", error);
+      // Les erreurs sont gérées dans le contexte d'authentification
+    }
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormField
             control={form.control}
@@ -47,6 +56,7 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
                       {...field} 
                       placeholder="Prénom" 
                       className="pl-10 bg-mystic-800/40 border-mystic-700/50 hover:border-energy-400/50 transition-colors" 
+                      disabled={isLoading}
                     />
                   </div>
                 </FormControl>
@@ -67,6 +77,7 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
                       {...field} 
                       placeholder="Nom" 
                       className="pl-10 bg-mystic-800/40 border-mystic-700/50 hover:border-energy-400/50 transition-colors" 
+                      disabled={isLoading}
                     />
                   </div>
                 </FormControl>
@@ -88,6 +99,7 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
                     {...field} 
                     placeholder="votre@email.com" 
                     className="pl-10 bg-mystic-800/40 border-mystic-700/50 hover:border-energy-400/50 transition-colors" 
+                    disabled={isLoading}
                   />
                 </div>
               </FormControl>
@@ -109,6 +121,7 @@ export const RegisterForm = ({ onSubmit, isLoading }: RegisterFormProps) => {
                     type="password"
                     placeholder="••••••••" 
                     className="pl-10 bg-mystic-800/40 border-mystic-700/50 hover:border-energy-400/50 transition-colors" 
+                    disabled={isLoading}
                   />
                 </div>
               </FormControl>
