@@ -72,10 +72,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           variant: "destructive",
         });
       } else {
-        toast({
-          title: "Inscription réussie",
-          description: "Veuillez vérifier votre email pour confirmer votre compte",
-        });
+        // Send welcome email
+        try {
+          await supabase.functions.invoke('send-confirmation', {
+            body: { email, firstName }
+          });
+          toast({
+            title: "Inscription réussie",
+            description: "Un email de confirmation vous a été envoyé",
+          });
+        } catch (emailError) {
+          console.error("Error sending welcome email:", emailError);
+          // Still show success toast even if email fails
+          toast({
+            title: "Inscription réussie",
+            description: "Votre compte a été créé avec succès",
+          });
+        }
       }
     } catch (error: any) {
       console.error("Caught signup error:", error);

@@ -3,3 +3,6 @@ project_id = "xrugepqsqfftnxhahfkp"
 
 [functions.export-emails]
 verify_jwt = true
+
+[functions.send-confirmation]
+verify_jwt = true
