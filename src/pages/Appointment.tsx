@@ -4,7 +4,7 @@ import { ScrollObserver } from "@/components/ui/scroll-observer";
 import { AppointmentForm } from "@/components/appointment/AppointmentForm";
 import { AppointmentFAQ } from "@/components/appointment/FAQ";
 import { GoogleCalendarConnect } from "@/components/GoogleCalendarConnect";
-import { InfoCircledIcon } from "@radix-ui/react-icons";
+import { Info } from "lucide-react";
 
 const Appointment = () => {
   return (
@@ -34,7 +34,7 @@ const Appointment = () => {
         <div className="container mx-auto px-6">
           <div className="flex flex-col items-center justify-center">
             <div className="flex items-center justify-center gap-2 mb-4">
-              <InfoCircledIcon className="h-5 w-5 text-energy-400" />
+              <Info className="h-5 w-5 text-energy-400" />
               <p className="text-gray-300">Synchronisez vos rendez-vous automatiquement avec votre calendrier</p>
             </div>
             <GoogleCalendarConnect />
