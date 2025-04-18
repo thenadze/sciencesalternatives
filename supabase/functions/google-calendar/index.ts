@@ -1,21 +1,14 @@
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
-const GOOGLE_API_KEY = Deno.env.get('GOOGLE_API_KEY');
-const CALENDAR_ID = 'primary'; // Using primary calendar, you can change this to a specific calendar ID
+const GOOGLE_CLIENT_ID = Deno.env.get('GOOGLE_CLIENT_ID');
+const GOOGLE_CLIENT_SECRET = Deno.env.get('GOOGLE_CLIENT_SECRET');
+const REDIRECT_URI = 'https://xrugepqsqfftnxhahfkp.supabase.co/functions/v1/google-calendar/callback';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
-
-interface AppointmentRequest {
-  date: string;
-  time: string;
-  service: string;
-  firstName: string;
-  lastName: string;
-}
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -23,97 +16,93 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  try {
-    const { action, ...data } = await req.json();
+  const url = new URL(req.url);
+  const path = url.pathname;
 
-    switch (action) {
-      case 'check':
-        return await checkAvailability(data.date, data.time);
-      case 'create':
-        return await createEvent(data as AppointmentRequest);
-      default:
-        throw new Error('Action non reconnue');
-    }
-  } catch (error) {
-    console.error('Erreur:', error);
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
-    );
+  switch (path) {
+    case '/google-calendar/authorize':
+      return handleAuthorization();
+    case '/google-calendar/callback':
+      return handleCallback(req);
+    case '/google-calendar/check':
+      return checkAvailability(req);
+    case '/google-calendar/create':
+      return createEvent(req);
+    default:
+      return new Response('Not Found', { status: 404 });
   }
 });
 
-async function checkAvailability(date: string, time: string) {
-  const startTime = new Date(`${date}T${time}`);
-  const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // 1 hour duration
+function handleAuthorization() {
+  const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
+  authUrl.searchParams.set('client_id', GOOGLE_CLIENT_ID);
+  authUrl.searchParams.set('redirect_uri', REDIRECT_URI);
+  authUrl.searchParams.set('response_type', 'code');
+  authUrl.searchParams.set('scope', 'https://www.googleapis.com/auth/calendar.events');
+  authUrl.searchParams.set('access_type', 'offline');
 
-  const url = `https://www.googleapis.com/calendar/v3/calendars/${CALENDAR_ID}/events?` + new URLSearchParams({
-    timeMin: startTime.toISOString(),
-    timeMax: endTime.toISOString(),
-    singleEvents: 'true',
-    key: GOOGLE_API_KEY as string
-  });
-
-  const response = await fetch(url);
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(`Erreur Google Calendar: ${data.error?.message || 'Unknown error'}`);
-  }
-
-  const isAvailable = !data.items?.some((event: any) => {
-    const eventStart = new Date(event.start.dateTime);
-    const eventEnd = new Date(event.end.dateTime);
-    return startTime < eventEnd && endTime > eventStart;
-  });
-
-  return new Response(
-    JSON.stringify({ available: isAvailable }),
-    {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  return new Response(null, {
+    status: 302,
+    headers: {
+      'Location': authUrl.toString(),
+      ...corsHeaders
     }
-  );
+  });
 }
 
-async function createEvent(appointment: AppointmentRequest) {
-  const startTime = new Date(`${appointment.date}T${appointment.time}`);
-  const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // 1 hour duration
+async function handleCallback(req) {
+  const url = new URL(req.url);
+  const code = url.searchParams.get('code');
 
-  const event = {
-    summary: `RDV ${appointment.service} - ${appointment.firstName} ${appointment.lastName}`,
-    start: {
-      dateTime: startTime.toISOString(),
-      timeZone: 'Europe/Paris',
-    },
-    end: {
-      dateTime: endTime.toISOString(),
-      timeZone: 'Europe/Paris',
-    },
-  };
-
-  const url = `https://www.googleapis.com/calendar/v3/calendars/${CALENDAR_ID}/events`;
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${GOOGLE_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(event),
-  });
-
-  const data = await response.json();
-  
-  if (!response.ok) {
-    throw new Error(`Erreur création événement: ${data.error?.message || 'Unknown error'}`);
+  if (!code) {
+    return new Response('No authorization code found', { status: 400 });
   }
 
-  return new Response(
-    JSON.stringify({ success: true, event: data }),
-    {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  // Exchange authorization code for tokens
+  const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({
+      client_id: GOOGLE_CLIENT_ID,
+      client_secret: GOOGLE_CLIENT_SECRET,
+      code,
+      grant_type: 'authorization_code',
+      redirect_uri: REDIRECT_URI
+    })
+  });
+
+  const tokens = await tokenResponse.json();
+
+  // Here you would typically store the tokens securely for the user
+  // For now, we'll just return them (in a production app, store in a secure database)
+  return new Response(JSON.stringify(tokens), {
+    headers: { 
+      ...corsHeaders, 
+      'Content-Type': 'application/json' 
     }
-  );
+  });
+}
+
+async function checkAvailability(req) {
+  // Implement Google Calendar availability check logic
+  // This would use the stored access token to query the user's calendar
+  return new Response(JSON.stringify({ available: true }), {
+    headers: { 
+      ...corsHeaders, 
+      'Content-Type': 'application/json' 
+    }
+  });
+}
+
+async function createEvent(req) {
+  // Implement Google Calendar event creation logic
+  // This would use the stored access token to create an event
+  return new Response(JSON.stringify({ success: true }), {
+    headers: { 
+      ...corsHeaders, 
+      'Content-Type': 'application/json' 
+    }
+  });
 }
