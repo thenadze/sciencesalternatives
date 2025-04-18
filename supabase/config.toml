@@ -3,3 +3,9 @@ project_id = "xrugepqsqfftnxhahfkp"
 
 [functions.google-calendar]
 verify_jwt = false
+
+[functions."google-calendar/authorize"]
+verify_jwt = false
+
+[functions."google-calendar/callback"]
+verify_jwt = false

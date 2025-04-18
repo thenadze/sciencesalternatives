@@ -1,3 +1,4 @@
+
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Calendar, Clock } from "lucide-react";
@@ -34,7 +35,7 @@ export const DateTimeFields = ({ form, timeSlots }: DateTimeFieldsProps) => {
       const formattedDate = format(selectedDate, "yyyy-MM-dd");
       
       try {
-        // Check existing appointments in Supabase
+        // Vérifier les rendez-vous existants dans Supabase
         const { data: bookedAppointments, error: supabaseError } = await supabase
           .from('appointments')
           .select('appointment_time')
@@ -43,28 +44,43 @@ export const DateTimeFields = ({ form, timeSlots }: DateTimeFieldsProps) => {
         
         if (supabaseError) throw supabaseError;
         
-        // Get booked times from Supabase
+        // Obtenir les heures réservées de Supabase
         const bookedTimes = new Set(bookedAppointments.map(app => app.appointment_time));
         
-        // Check each time slot against Google Calendar
-        const availableSlots = [];
-        for (const time of timeSlots) {
-          if (!bookedTimes.has(time)) {
-            const { data } = await supabase.functions.invoke('google-calendar', {
-              body: { action: 'check', date: formattedDate, time }
-            });
-            
-            if (data.available) {
+        // Filtrer d'abord les créneaux déjà réservés dans la base de données
+        const slotsAfterDbCheck = timeSlots.filter(time => !bookedTimes.has(time));
+        
+        try {
+          // Essayer de vérifier chaque créneau horaire dans Google Calendar
+          // Si ça échoue, on continuera avec les créneaux filtrés par la base de données
+          const availableSlots = [];
+          for (const time of slotsAfterDbCheck) {
+            try {
+              const { data } = await supabase.functions.invoke('google-calendar', {
+                body: { action: 'check', date: formattedDate, time }
+              });
+              
+              // Si nous n'avons pas d'info claire sur la disponibilité, on considère disponible
+              if (data?.available !== false) {
+                availableSlots.push(time);
+              }
+            } catch (e) {
+              // En cas d'erreur, on considère le créneau comme disponible
               availableSlots.push(time);
             }
           }
+          
+          setAvailableTimeSlots(availableSlots.length > 0 ? availableSlots : slotsAfterDbCheck);
+        } catch (error) {
+          // En cas d'erreur globale avec Google Calendar, on utilise simplement
+          // les créneaux filtrés par la base de données
+          console.error("Erreur lors de la vérification Google Calendar:", error);
+          setAvailableTimeSlots(slotsAfterDbCheck);
         }
         
-        setAvailableTimeSlots(availableSlots);
-        
-        // If the currently selected time is no longer available, reset it
+        // Si l'heure actuellement sélectionnée n'est plus disponible, la réinitialiser
         const currentTime = form.getValues("appointment_time");
-        if (currentTime && !availableSlots.includes(currentTime)) {
+        if (currentTime && !availableTimeSlots.includes(currentTime)) {
           form.setValue("appointment_time", "");
         }
       } catch (error) {
