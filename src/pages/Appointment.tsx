@@ -1,42 +1,12 @@
-
 import { useEffect } from "react";
-import { Navigate } from "react-router-dom";
 import { ScrollObserver } from "@/components/ui/scroll-observer";
-import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { AppointmentForm } from "@/components/appointment/AppointmentForm";
 import { AppointmentFAQ } from "@/components/appointment/FAQ";
 import { useForm } from "react-hook-form";
 
 const Appointment = () => {
-  const { user, isLoading } = useAuth();
   const form = useForm();
-
-  // Pré-remplir le formulaire avec les informations du profil de l'utilisateur
-  useEffect(() => {
-    if (user) {
-      const fetchProfile = async () => {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('first_name, last_name')
-          .eq('id', user.id)
-          .single();
-        
-        if (data && !error) {
-          form.setValue('first_name', data.first_name || '');
-          form.setValue('last_name', data.last_name || '');
-          form.setValue('email', user.email || '');
-        }
-      };
-      
-      fetchProfile();
-    }
-  }, [user, form]);
-
-  // Rediriger vers la page d'authentification si l'utilisateur n'est pas connecté
-  if (!isLoading && !user) {
-    return <Navigate to="/auth" />;
-  }
 
   return (
     <div className="overflow-hidden">

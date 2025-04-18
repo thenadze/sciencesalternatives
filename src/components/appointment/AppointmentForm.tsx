@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
@@ -56,7 +55,6 @@ type AppointmentFormValues = z.infer<typeof appointmentSchema>;
 export const AppointmentForm = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const timeSlots = [
@@ -75,21 +73,13 @@ export const AppointmentForm = () => {
     },
   });
   
-  // Effet pour pré-remplir le formulaire avec les informations du profil utilisateur est géré dans le composant parent
-
   const onSubmit = async (data: AppointmentFormValues) => {
-    if (!user) return;
-    
     setIsSubmitting(true);
     
     try {
-      // Conversion de la date en string pour correspondre au schéma de la base de données
-      const formattedDate = format(data.appointment_date, 'yyyy-MM-dd');
-      
       const { error } = await supabase.from('appointments').insert({
-        user_id: user.id,
         service: data.service,
-        appointment_date: formattedDate,
+        appointment_date: format(data.appointment_date, 'yyyy-MM-dd'),
         appointment_time: data.appointment_time,
         first_name: data.first_name,
         last_name: data.last_name,
@@ -106,8 +96,7 @@ export const AppointmentForm = () => {
         description: "Votre rendez-vous a été enregistré avec succès.",
       });
       
-      // Rediriger vers l'espace client
-      navigate('/espace-personnel');
+      navigate('/');
     } catch (error: any) {
       toast({
         title: "Erreur lors de la prise de rendez-vous",
