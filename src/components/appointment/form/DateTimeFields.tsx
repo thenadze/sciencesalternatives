@@ -1,4 +1,3 @@
-
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Calendar, Clock } from "lucide-react";
@@ -12,6 +11,7 @@ import { AppointmentFormValues } from "./types";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { GoogleCalendarConnect } from "@/components/GoogleCalendarConnect";
 
 interface DateTimeFieldsProps {
   form: UseFormReturn<AppointmentFormValues>;
@@ -173,6 +173,15 @@ export const DateTimeFields = ({ form, timeSlots }: DateTimeFieldsProps) => {
           </FormItem>
         )}
       />
+
+      <div className="col-span-full mt-4">
+        <div className="flex items-center justify-center">
+          <GoogleCalendarConnect />
+        </div>
+        <p className="text-center text-sm text-gray-500 mt-2">
+          Connectez votre Google Calendar pour une synchronisation parfaite
+        </p>
+      </div>
     </div>
   );
 };
