@@ -57,15 +57,15 @@ const handler = async (req: Request): Promise<Response> => {
     // Envoi de l'email via Resend
     // Utilisation de l'adresse par défaut fournie par Resend
     const emailResponse = await resend.emails.send({
-      from: "Lovable <onboarding@resend.dev>",
+      from: "Harmonie Énergétique <onboarding@resend.dev>",
       to: [email],
-      subject: "Bienvenue sur notre plateforme !",
+      subject: "Bienvenue sur Harmonie Énergétique !",
       html: `
         <h1>Bienvenue ${firstName} !</h1>
-        <p>Merci de vous être inscrit sur notre plateforme.</p>
-        <p>Nous sommes ravis de vous compter parmi nos membres et nous espérons que vous apprécierez nos services.</p>
-        <p>N'hésitez pas à nous contacter si vous avez des questions.</p>
-        <p>À bientôt !<br>L'équipe</p>
+        <p>Merci de vous être inscrit sur Harmonie Énergétique.</p>
+        <p>Nous sommes ravis de vous compter parmi nos membres et nous espérons que vous apprécierez nos services de soins énergétiques.</p>
+        <p>N'hésitez pas à nous contacter si vous avez des questions ou pour prendre rendez-vous.</p>
+        <p>À bientôt !<br>L'équipe d'Harmonie Énergétique</p>
       `,
     });
 
