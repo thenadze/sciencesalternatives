@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
-import { Calendar } from 'lucide-react';
+import { Calendar, Check } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLocation } from 'react-router-dom';
 
@@ -86,15 +86,20 @@ export const GoogleCalendarConnect = () => {
     <Button 
       onClick={connectToGoogleCalendar}
       variant={isConnected ? 'outline' : 'default'}
-      className="gap-2"
+      className={`gap-2 ${isConnected ? 'bg-green-900/20 text-green-400 hover:bg-green-900/30 border-green-800' : ''}`}
       disabled={isLoading}
     >
-      <Calendar className="h-4 w-4" />
-      {isLoading 
-        ? 'Chargement...' 
-        : isConnected 
-          ? 'Calendrier connecté' 
-          : 'Connecter Google Calendar'}
+      {isConnected ? (
+        <>
+          <Check className="h-4 w-4" />
+          Calendrier connecté
+        </>
+      ) : (
+        <>
+          <Calendar className="h-4 w-4" />
+          {isLoading ? 'Chargement...' : 'Connecter mon Google Calendar'}
+        </>
+      )}
     </Button>
   );
 };

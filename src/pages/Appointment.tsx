@@ -1,13 +1,12 @@
+
 import { useEffect } from "react";
 import { ScrollObserver } from "@/components/ui/scroll-observer";
-import { supabase } from "@/integrations/supabase/client";
 import { AppointmentForm } from "@/components/appointment/AppointmentForm";
 import { AppointmentFAQ } from "@/components/appointment/FAQ";
-import { useForm } from "react-hook-form";
+import { GoogleCalendarConnect } from "@/components/GoogleCalendarConnect";
+import { InfoCircledIcon } from "@radix-ui/react-icons";
 
 const Appointment = () => {
-  const form = useForm();
-
   return (
     <div className="overflow-hidden">
       {/* Hero Section */}
@@ -27,6 +26,19 @@ const Appointment = () => {
               Réservez votre séance de soins énergétiques en quelques clics
             </p>
           </ScrollObserver>
+        </div>
+      </section>
+
+      {/* Calendrier Google */}
+      <section className="py-8 bg-mystic-900/60">
+        <div className="container mx-auto px-6">
+          <div className="flex flex-col items-center justify-center">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <InfoCircledIcon className="h-5 w-5 text-energy-400" />
+              <p className="text-gray-300">Synchronisez vos rendez-vous automatiquement avec votre calendrier</p>
+            </div>
+            <GoogleCalendarConnect />
+          </div>
         </div>
       </section>
 
