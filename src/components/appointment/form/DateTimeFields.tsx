@@ -34,27 +34,43 @@ export const DateTimeFields = ({ form, timeSlots }: DateTimeFieldsProps) => {
       const formattedDate = format(selectedDate, "yyyy-MM-dd");
       
       try {
-        const { data: bookedAppointments, error } = await supabase
+        // Check existing appointments in Supabase
+        const { data: bookedAppointments, error: supabaseError } = await supabase
           .from('appointments')
           .select('appointment_time')
           .eq('appointment_date', formattedDate)
           .neq('status', 'cancelled');
         
-        if (error) throw error;
+        if (supabaseError) throw supabaseError;
         
-        // Filter out booked time slots
-        const bookedTimes = bookedAppointments.map(app => app.appointment_time);
-        const available = timeSlots.filter(time => !bookedTimes.includes(time));
+        // Get booked times from Supabase
+        const bookedTimes = new Set(bookedAppointments.map(app => app.appointment_time));
         
-        setAvailableTimeSlots(available);
+        // Check each time slot against Google Calendar
+        const availableSlots = [];
+        for (const time of timeSlots) {
+          if (!bookedTimes.has(time)) {
+            const { data } = await supabase.functions.invoke('google-calendar', {
+              body: { action: 'check', date: formattedDate, time }
+            });
+            
+            if (data.available) {
+              availableSlots.push(time);
+            }
+          }
+        }
+        
+        setAvailableTimeSlots(availableSlots);
         
         // If the currently selected time is no longer available, reset it
         const currentTime = form.getValues("appointment_time");
-        if (currentTime && !available.includes(currentTime)) {
+        if (currentTime && !availableSlots.includes(currentTime)) {
           form.setValue("appointment_time", "");
         }
       } catch (error) {
         console.error("Erreur lors de la vérification des disponibilités:", error);
+        // En cas d'erreur, on garde tous les créneaux par défaut
+        setAvailableTimeSlots(timeSlots);
       } finally {
         setIsLoading(false);
       }
@@ -93,7 +109,6 @@ export const DateTimeFields = ({ form, timeSlots }: DateTimeFieldsProps) => {
                   selected={field.value}
                   onSelect={(date) => {
                     field.onChange(date);
-                    // Reset time when date changes
                     form.setValue("appointment_time", "");
                   }}
                   initialFocus

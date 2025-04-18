@@ -40,10 +40,10 @@ export const AppointmentForm = () => {
     setIsSubmitting(true);
     
     try {
-      // Convertir la date en format string YYYY-MM-DD
+      // Format date
       const formattedDate = format(data.appointment_date, 'yyyy-MM-dd');
       
-      // Vérifier une dernière fois si le créneau est disponible
+      // Final availability check with Supabase
       const { data: existingAppointments, error: checkError } = await supabase
         .from('appointments')
         .select('id')
@@ -59,13 +59,32 @@ export const AppointmentForm = () => {
           description: "Ce créneau vient d'être réservé. Veuillez sélectionner un autre horaire.",
           variant: "destructive",
         });
-        // Mettre à jour le formulaire pour forcer le rafraîchissement des créneaux disponibles
+        form.setValue("appointment_time", "");
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Check Google Calendar availability
+      const { data: gcalCheck } = await supabase.functions.invoke('google-calendar', {
+        body: { 
+          action: 'check',
+          date: formattedDate,
+          time: data.appointment_time
+        }
+      });
+
+      if (!gcalCheck.available) {
+        toast({
+          title: "Horaire non disponible",
+          description: "Ce créneau n'est plus disponible dans le calendrier. Veuillez sélectionner un autre horaire.",
+          variant: "destructive",
+        });
         form.setValue("appointment_time", "");
         setIsSubmitting(false);
         return;
       }
       
-      // Si le créneau est toujours disponible, insérer le rendez-vous
+      // Create appointment in Supabase
       const { error } = await supabase.from('appointments').insert({
         service: data.service,
         appointment_date: formattedDate,
@@ -79,6 +98,23 @@ export const AppointmentForm = () => {
       });
       
       if (error) throw error;
+
+      // Create event in Google Calendar
+      const { data: gcalEvent, error: gcalError } = await supabase.functions.invoke('google-calendar', {
+        body: {
+          action: 'create',
+          date: formattedDate,
+          time: data.appointment_time,
+          service: data.service,
+          firstName: data.first_name,
+          lastName: data.last_name
+        }
+      });
+
+      if (gcalError) {
+        console.error("Erreur lors de la création de l'événement Google Calendar:", gcalError);
+        // Continue anyway as the appointment is created in our database
+      }
       
       toast({
         title: "Rendez-vous confirmé",
