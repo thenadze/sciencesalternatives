@@ -1,8 +1,10 @@
 
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Calendar, Clock, CalendarIcon } from "lucide-react";
+import { Calendar, Clock, CalendarIcon, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 type Appointment = {
   id: string;
@@ -10,10 +12,11 @@ type Appointment = {
   appointment_date: string;
   appointment_time: string;
   status: string;
+  message?: string; // Ajout du champ message
 };
 
-type AppointmentCardProps = {
-  appointment: Appointment;
+type AppointmentCardProps = { 
+  appointment: Appointment; 
   isPast?: boolean;
   onCancelAppointment?: (id: string) => void;
 };
@@ -65,6 +68,26 @@ export const AppointmentCard = ({
               <span>{appointment.appointment_time}</span>
             </div>
           </div>
+          
+          {/* Nouvelle section pour afficher un indicateur de message */}
+          {appointment.message && (
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="ghost" size="sm" className="mt-2 text-gray-400 hover:text-energy-400">
+                  <MessageCircle className="h-4 w-4 mr-2" /> 
+                  Informations complémentaires
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Informations complémentaires</DialogTitle>
+                </DialogHeader>
+                <div className="p-4 bg-mystic-900/40 rounded-md">
+                  <p className="text-white">{appointment.message}</p>
+                </div>
+              </DialogContent>
+            </Dialog>
+          )}
         </div>
       </div>
       
