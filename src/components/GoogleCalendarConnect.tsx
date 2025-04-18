@@ -53,10 +53,22 @@ export const GoogleCalendarConnect = () => {
   const connectToGoogleCalendar = async () => {
     try {
       setIsLoading(true);
+      console.log("Tentative de connexion à Google Calendar");
+      
       const { data, error } = await supabase.functions.invoke('google-calendar/authorize');
 
-      if (error) throw error;
+      if (error) {
+        console.error("Erreur d'invocation de la fonction:", error);
+        throw error;
+      }
 
+      if (!data || !data.url) {
+        console.error("URL d'autorisation non reçue:", data);
+        throw new Error("URL d'autorisation non reçue");
+      }
+
+      console.log("URL d'autorisation reçue:", data.url);
+      
       // Rediriger vers la page d'autorisation de Google
       window.location.href = data.url;
     } catch (error) {

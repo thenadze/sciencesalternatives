@@ -42,7 +42,7 @@ serve(async (req) => {
           );
       }
     } else if (path === '/google-calendar/authorize') {
-      return handleAuthorization();
+      return handleAuthorization(req);
     } else if (path === '/google-calendar/callback') {
       return handleCallback(req);
     } else {
@@ -66,19 +66,28 @@ serve(async (req) => {
   }
 });
 
-function handleAuthorization() {
+function handleAuthorization(req) {
   try {
     if (!GOOGLE_CLIENT_ID) {
       throw new Error('Google Client ID non configuré');
     }
 
+    console.log('Génération de l\'URL d\'autorisation avec REDIRECT_URI:', REDIRECT_URI);
+
+    // Récupérer l'origine de la requête pour le paramètre state
+    const origin = req.headers.get('origin') || 'https://lovable.dev';
+    
     const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
     authUrl.searchParams.set('client_id', GOOGLE_CLIENT_ID);
     authUrl.searchParams.set('redirect_uri', REDIRECT_URI);
     authUrl.searchParams.set('response_type', 'code');
-    authUrl.searchParams.set('scope', 'https://www.googleapis.com/auth/calendar.events');
+    authUrl.searchParams.set('scope', 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events');
     authUrl.searchParams.set('access_type', 'offline');
     authUrl.searchParams.set('prompt', 'consent'); // Force l'affichage du consentement pour obtenir un refresh_token
+    // Ajouter l'origine dans le state pour rediriger correctement après
+    authUrl.searchParams.set('state', origin);
+
+    console.log('URL d\'autorisation générée:', authUrl.toString());
 
     return new Response(
       JSON.stringify({ url: authUrl.toString() }),
@@ -109,8 +118,12 @@ async function handleCallback(req) {
   try {
     const url = new URL(req.url);
     const code = url.searchParams.get('code');
+    const state = url.searchParams.get('state') || '';
+
+    console.log('Callback reçu avec code et state:', { code: code?.substring(0, 5) + '...', state });
 
     if (!code) {
+      console.error('Code d\'autorisation manquant');
       return new Response(
         JSON.stringify({ error: 'Code d\'autorisation manquant' }),
         { 
@@ -125,6 +138,7 @@ async function handleCallback(req) {
     }
 
     // Échange du code d'autorisation contre des tokens
+    console.log('Tentative d\'échange du code contre des tokens');
     const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: {
@@ -141,16 +155,24 @@ async function handleCallback(req) {
 
     if (!tokenResponse.ok) {
       const errorData = await tokenResponse.text();
+      console.error('Erreur lors de l\'échange de token:', errorData);
       throw new Error(`Erreur lors de l'échange de token: ${errorData}`);
     }
 
     const tokens = await tokenResponse.json();
+    console.log('Tokens reçus:', { access_token: tokens.access_token?.substring(0, 5) + '...', expires_in: tokens.expires_in });
 
     // Dans un vrai système, vous stockeriez ces tokens de manière sécurisée
     // Pour cet exemple, on renvoie vers l'application avec un message de succès
-    const redirectUrl = new URL(url.origin);
-    redirectUrl.pathname = '/rendez-vous';
+    const redirectUrl = new URL(state || url.origin);
+    
+    // Si l'URL ne contient pas déjà un chemin pour rendez-vous, l'ajouter
+    if (!redirectUrl.pathname.includes('/rendez-vous')) {
+      redirectUrl.pathname = '/rendez-vous';
+    }
+    
     redirectUrl.searchParams.set('calendar_connected', 'true');
+    console.log('Redirection vers:', redirectUrl.toString());
 
     return new Response(null, {
       status: 302,
@@ -162,9 +184,22 @@ async function handleCallback(req) {
   } catch (error) {
     console.error('Erreur callback:', error);
     // Redirect to the appointment page with an error message
-    const redirectUrl = new URL(req.headers.get('origin') || 'https://example.com');
-    redirectUrl.pathname = '/rendez-vous';
+    let redirectUrl;
+    try {
+      const url = new URL(req.url);
+      const state = url.searchParams.get('state') || '';
+      redirectUrl = new URL(state || 'https://lovable.dev');
+      
+      // Si l'URL ne contient pas déjà un chemin pour rendez-vous, l'ajouter
+      if (!redirectUrl.pathname.includes('/rendez-vous')) {
+        redirectUrl.pathname = '/rendez-vous';
+      }
+    } catch (e) {
+      redirectUrl = new URL('https://lovable.dev/rendez-vous');
+    }
+    
     redirectUrl.searchParams.set('calendar_error', 'true');
+    console.log('Redirection vers (erreur):', redirectUrl.toString());
 
     return new Response(null, {
       status: 302,
@@ -180,7 +215,7 @@ async function checkConnection(req) {
   // Pour l'instant, simulons une vérification simple
   // Dans une implémentation réelle, vous vérifieriez les tokens stockés
   return new Response(
-    JSON.stringify({ connected: false }), 
+    JSON.stringify({ connected: false, available: true }), 
     { 
       headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
     }
