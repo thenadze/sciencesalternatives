@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Facebook, Instagram, Mail, MapPin, Phone } from "lucide-react";
 
@@ -8,7 +7,7 @@ export function Footer() {
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           <div>
-            <h3 className="text-energy-400 text-xl font-cinzel mb-4">Harmonie Énergétique</h3>
+            <h3 className="text-energy-400 text-xl font-cinzel mb-4">Portfolio Énergies</h3>
             <p className="text-gray-400 mb-4">
               Des soins énergétiques adaptés à vos besoins pour rétablir l'harmonie entre le corps et l'esprit.
             </p>
@@ -73,7 +72,7 @@ export function Footer() {
         </div>
         
         <div className="border-t border-mystic-800/30 mt-10 pt-6 text-center text-gray-500 text-sm">
-          <p>© {new Date().getFullYear()} Harmonie Énergétique. Tous droits réservés.</p>
+          <p>© {new Date().getFullYear()} Portfolio Énergies. Tous droits réservés.</p>
         </div>
       </div>
     </footer>

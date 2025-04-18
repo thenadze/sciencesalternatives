@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, User } from "lucide-react";
@@ -18,13 +17,10 @@ export function Navbar() {
     { name: "Contact", href: "/contact" },
   ];
 
-  // Function to handle smooth scrolling for anchor links
   const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    // Check if it's an anchor link on the current page
     if (href.startsWith('#') || (location.pathname === '/' && href === '/')) {
       e.preventDefault();
       
-      // If it's the home link on the home page, scroll to top
       if (href === '/' && location.pathname === '/') {
         window.scrollTo({
           top: 0,
@@ -33,7 +29,6 @@ export function Navbar() {
         return;
       }
       
-      // For true anchor links, extract the ID and scroll to it
       const targetId = href.startsWith('#') ? href.substring(1) : '';
       const targetElement = document.getElementById(targetId);
       
@@ -42,7 +37,6 @@ export function Navbar() {
           behavior: 'smooth'
         });
         
-        // Close the mobile menu if open
         if (mobileMenuOpen) {
           setMobileMenuOpen(false);
         }
@@ -52,7 +46,6 @@ export function Navbar() {
 
   const isActive = (path: string) => {
     if (path.startsWith('#')) {
-      // For anchor links, check if that section is current in viewport
       const targetId = path.substring(1);
       return location.hash === path;
     }
@@ -69,11 +62,10 @@ export function Navbar() {
         >
           <span className="w-2 h-2 rounded-full bg-energy-400 shadow-[0_0_10px_rgba(243,190,89,0.7)]"></span>
           <span className="bg-gradient-to-r from-energy-300 to-energy-400 bg-clip-text text-transparent">
-            Harmonie Énergétique
+            Portfolio Énergies
           </span>
         </Link>
 
-        {/* Desktop nav */}
         <div className="hidden md:flex items-center space-x-6">
           <div className="flex space-x-4">
             {navItems.map((item) => (
@@ -109,7 +101,6 @@ export function Navbar() {
           </Button>
         </div>
 
-        {/* Mobile menu button */}
         <Button
           variant="ghost"
           size="icon"
@@ -124,7 +115,6 @@ export function Navbar() {
         </Button>
       </nav>
 
-      {/* Mobile menu */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-mystic-950/95 backdrop-blur-md">
           <div className="container mx-auto px-6 py-4 space-y-4">

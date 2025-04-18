@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { ScrollObserver } from "@/components/ui/scroll-observer";
@@ -11,12 +10,10 @@ export function HeroSection() {
   const [isButtonAnimated, setIsButtonAnimated] = useState(false);
   
   useEffect(() => {
-    // Set a small timeout to trigger the animations after component mount
     const timer = setTimeout(() => {
       setIsVisible(true);
     }, 100);
     
-    // Set a timer for the button animation to start after the other elements
     const buttonTimer = setTimeout(() => {
       setIsButtonAnimated(true);
     }, 1000);
@@ -45,7 +42,7 @@ export function HeroSection() {
           <p 
             className={`text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-10 transition-all duration-700 ease-out delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
           >
-            Des soins énergétiques personnalisés pour harmoniser votre corps et votre esprit. 
+            Des soins énergétiques personnalisés par Portfolio Énergies pour harmoniser votre corps et votre esprit. 
             Découvrez le pouvoir du Reiki et du Magnétisme.
           </p>
           <div 
@@ -54,7 +51,6 @@ export function HeroSection() {
             <div 
               className={`relative transition-all duration-1000 ${isButtonAnimated ? 'scale-105' : 'scale-100'}`}
             >
-              {/* Background glow effect */}
               <div 
                 className={`absolute inset-0 bg-energy-400/20 blur-xl rounded-full transition-opacity duration-1000 ${isButtonAnimated ? 'opacity-70 animate-pulse-glow' : 'opacity-0'}`} 
               />
