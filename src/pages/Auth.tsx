@@ -9,6 +9,7 @@ import { RegisterForm } from "@/components/auth/RegisterForm";
 import { ResetPasswordForm } from "@/components/auth/ResetPasswordForm";
 import { ExportEmailsButton } from "@/components/auth/ExportEmailsButton";
 import { Card, CardContent } from "@/components/ui/card";
+import { toast } from "@/hooks/use-toast";
 
 type AuthMode = "login" | "register" | "resetPassword";
 
@@ -24,8 +25,10 @@ const Auth = () => {
     setAuthLoading(true);
     try {
       await signIn(values.email, values.password);
+      // Succès géré dans le contexte d'auth
     } catch (error) {
       console.error("Login error:", error);
+      // Ne pas afficher de toast ici, l'erreur est gérée dans le formulaire
     } finally {
       setAuthLoading(false);
     }
@@ -35,8 +38,15 @@ const Auth = () => {
     setAuthLoading(true);
     try {
       await signUp(values.email, values.password, values.firstName, values.lastName);
+      // Si nous arrivons ici, l'inscription a réussi, passer automatiquement à la page de connexion
+      toast({
+        title: "Inscription réussie",
+        description: "Vous pouvez maintenant vous connecter avec vos identifiants",
+      });
+      setAuthMode("login");
     } catch (error) {
       console.error("Registration error:", error);
+      // L'erreur est déjà gérée dans le contexte d'auth
     } finally {
       setAuthLoading(false);
     }

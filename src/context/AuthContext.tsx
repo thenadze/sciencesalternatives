@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User, Session } from "@supabase/supabase-js";
@@ -54,7 +55,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             first_name: firstName,
             last_name: lastName,
           },
-          emailRedirectTo: undefined,
+          emailRedirectTo: `${window.location.origin}/auth`,
         },
       });
 
@@ -82,13 +83,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           
           toast({
             title: "Inscription réussie",
-            description: "Votre compte a été créé avec succès",
+            description: "Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.",
           });
         } catch (emailError) {
           console.error("Erreur lors de l'envoi de l'email de bienvenue:", emailError);
           toast({
             title: "Inscription réussie",
-            description: "Votre compte a été créé avec succès",
+            description: "Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.",
           });
         }
       }
@@ -99,19 +100,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       if (error.message.includes("confirmation email")) {
         errorMessage = "Problème lors de l'envoi de l'email de confirmation, mais votre compte a bien été créé. Veuillez vous connecter.";
-        try {
-          await signIn(email, password);
-          return;
-        } catch (signInError) {
-          console.error("Erreur lors de la tentative de connexion après échec d'email:", signInError);
-        }
+        toast({
+          title: "Inscription partielle",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      } else if (error.message.includes("rate limit")) {
+        errorMessage = "Trop de tentatives d'inscription. Veuillez réessayer plus tard.";
+        toast({
+          title: "Erreur d'inscription",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Erreur d'inscription",
+          description: errorMessage,
+          variant: "destructive",
+        });
       }
-      
-      toast({
-        title: "Erreur d'inscription",
-        description: errorMessage,
-        variant: "destructive",
-      });
       
       throw error;
     } finally {
@@ -122,37 +129,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signIn = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      console.log("Attempting signin with:", email);
+      console.log("Tentative de connexion avec:", email);
       const { error, data } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) {
-        console.error("Signin error:", error);
+        console.error("Erreur de connexion:", error);
         throw error;
       }
       
-      console.log("Signin success:", data);
+      console.log("Connexion réussie:", data);
       toast({
         title: "Connexion réussie",
         description: "Bienvenue sur votre espace personnel",
       });
     } catch (error: any) {
-      console.error("Caught signin error:", error);
-      let errorMessage = "Identifiants incorrects";
-      
-      if (error.message.includes("Invalid login credentials")) {
-        errorMessage = "Email ou mot de passe incorrect";
-      } else if (error.message.includes("Email not confirmed")) {
-        errorMessage = "Veuillez confirmer votre email avant de vous connecter";
-      }
-      
-      toast({
-        title: "Erreur de connexion",
-        description: errorMessage,
-        variant: "destructive",
-      });
+      console.error("Erreur de connexion interceptée:", error);
+      // Ne pas afficher de toast ici, laisser le formulaire gérer l'affichage de l'erreur
       throw error;
     } finally {
       setIsLoading(false);
@@ -162,7 +157,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const resetPassword = async (email: string) => {
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin + "/auth?reset=true",
+        redirectTo: `${window.location.origin}/auth?reset=true`,
       });
       
       if (error) throw error;

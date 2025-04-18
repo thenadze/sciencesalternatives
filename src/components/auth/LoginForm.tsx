@@ -7,6 +7,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { EnergyButton } from "@/components/ui/energy-button";
+import { useState } from "react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const loginSchema = z.object({
   email: z.string().email("Email invalide"),
@@ -20,6 +22,8 @@ type LoginFormProps = {
 };
 
 export const LoginForm = ({ onSubmit, onResetPassword, isLoading }: LoginFormProps) => {
+  const [authError, setAuthError] = useState<string | null>(null);
+  
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -28,9 +32,32 @@ export const LoginForm = ({ onSubmit, onResetPassword, isLoading }: LoginFormPro
     },
   });
 
+  const handleSubmit = async (values: z.infer<typeof loginSchema>) => {
+    setAuthError(null); // Reset error on new submission
+    try {
+      await onSubmit(values);
+    } catch (error: any) {
+      // Capture and display authentication errors
+      if (error?.message?.includes("Invalid login credentials")) {
+        setAuthError("Email ou mot de passe incorrect");
+      } else if (error?.message?.includes("Email not confirmed")) {
+        setAuthError("Veuillez confirmer votre email avant de vous connecter");
+      } else {
+        setAuthError(error?.message || "Une erreur est survenue lors de la connexion");
+      }
+      console.error("Login form error:", error);
+    }
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+        {authError && (
+          <Alert variant="destructive" className="bg-red-900/20 border-red-800 text-red-100">
+            <AlertDescription>{authError}</AlertDescription>
+          </Alert>
+        )}
+        
         <FormField
           control={form.control}
           name="email"

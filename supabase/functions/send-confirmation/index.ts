@@ -4,7 +4,7 @@ import { Resend } from "npm:resend@2.0.0";
 
 // Création de l'instance Resend avec la clé API
 const resendApiKey = Deno.env.get("RESEND_API_KEY");
-const resend = new Resend(resendApiKey);
+const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
 // En-têtes CORS pour permettre les requêtes depuis n'importe quelle origine
 const corsHeaders = {
@@ -32,9 +32,12 @@ const handler = async (req: Request): Promise<Response> => {
     if (!firstName || !email) {
       console.error("Données manquantes:", { firstName, email });
       return new Response(
-        JSON.stringify({ error: "Le prénom et l'email sont requis" }),
+        JSON.stringify({ 
+          success: false,
+          error: "Le prénom et l'email sont requis" 
+        }),
         {
-          status: 400,
+          status: 200, // On renvoie 200 même en cas d'erreur pour ne pas bloquer l'inscription
           headers: { "Content-Type": "application/json", ...corsHeaders },
         }
       );
@@ -43,10 +46,12 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`Tentative d'envoi d'email à ${email} pour ${firstName}`);
 
     // Si la clé Resend n'est pas configurée, on simule un succès pour le développement
-    if (!resendApiKey) {
+    if (!resend) {
       console.log("RESEND_API_KEY non configurée, simulation d'un envoi réussi");
       return new Response(
         JSON.stringify({ 
+          success: true,
+          simulated: true,
           id: "simulated-email-id", 
           from: "dev@example.com",
           to: email,
@@ -75,18 +80,25 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Email envoyé avec succès:", emailResponse);
 
-    return new Response(JSON.stringify(emailResponse), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-        ...corsHeaders,
-      },
-    });
+    return new Response(
+      JSON.stringify({ 
+        success: true,
+        ...emailResponse 
+      }),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+          ...corsHeaders,
+        },
+      }
+    );
   } catch (error: any) {
     console.error("Erreur dans la fonction send-confirmation:", error);
     // On retourne un succès même en cas d'erreur pour ne pas bloquer l'inscription
     return new Response(
       JSON.stringify({ 
+        success: false,
         status: "error_but_continue",
         error: error.message,
         details: error.stack 
