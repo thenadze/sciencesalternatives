@@ -46,7 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signUp = async (email: string, password: string, firstName: string, lastName: string) => {
     setIsLoading(true);
     try {
-      console.log("Attempting signup with:", { email, firstName, lastName });
+      console.log("Tentative d'inscription avec:", { email, firstName, lastName });
       const { error, data } = await supabase.auth.signUp({
         email,
         password,
@@ -59,11 +59,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       if (error) {
-        console.error("Signup error:", error);
+        console.error("Erreur d'inscription:", error);
         throw error;
       }
       
-      console.log("Signup success:", data);
+      console.log("Inscription réussie:", data);
       
       if (data?.user?.identities?.length === 0) {
         toast({
@@ -72,18 +72,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           variant: "destructive",
         });
       } else {
-        // Send welcome email
+        // Envoi de l'email de bienvenue
         try {
-          await supabase.functions.invoke('send-confirmation', {
+          console.log("Tentative d'envoi d'email de confirmation à:", email);
+          const emailResponse = await supabase.functions.invoke('send-confirmation', {
             body: { email, firstName }
           });
-          toast({
-            title: "Inscription réussie",
-            description: "Un email de confirmation vous a été envoyé",
-          });
+          
+          console.log("Réponse de la fonction d'envoi d'email:", emailResponse);
+          
+          if (emailResponse.error) {
+            console.error("Erreur lors de l'envoi de l'email:", emailResponse.error);
+            toast({
+              title: "Inscription réussie",
+              description: "Votre compte a été créé avec succès, mais l'email de confirmation n'a pas pu être envoyé.",
+            });
+          } else {
+            toast({
+              title: "Inscription réussie",
+              description: "Un email de confirmation vous a été envoyé",
+            });
+          }
         } catch (emailError) {
-          console.error("Error sending welcome email:", emailError);
-          // Still show success toast even if email fails
+          console.error("Erreur lors de l'envoi de l'email de bienvenue:", emailError);
+          // Afficher quand même un toast de succès même si l'email échoue
           toast({
             title: "Inscription réussie",
             description: "Votre compte a été créé avec succès",
@@ -91,7 +103,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       }
     } catch (error: any) {
-      console.error("Caught signup error:", error);
+      console.error("Erreur d'inscription interceptée:", error);
       toast({
         title: "Erreur d'inscription",
         description: error.message || "Une erreur s'est produite lors de l'inscription",
