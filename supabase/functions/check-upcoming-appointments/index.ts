@@ -42,7 +42,7 @@ const handler = async (req: Request) => {
       .from('appointments')
       .select('*')
       .or(`appointment_date.eq.${today},appointment_date.eq.${tomorrowFormatted}`)
-      .neq('status', 'cancelled');
+      .eq('status', 'pending'); // Only get pending appointments, not cancelled ones
 
     if (error) {
       console.error("Error fetching appointments:", error);

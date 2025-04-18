@@ -40,9 +40,35 @@ export const AppointmentForm = () => {
     setIsSubmitting(true);
     
     try {
+      // Convertir la date en format string YYYY-MM-DD
+      const formattedDate = format(data.appointment_date, 'yyyy-MM-dd');
+      
+      // Vérifier une dernière fois si le créneau est disponible
+      const { data: existingAppointments, error: checkError } = await supabase
+        .from('appointments')
+        .select('id')
+        .eq('appointment_date', formattedDate)
+        .eq('appointment_time', data.appointment_time)
+        .neq('status', 'cancelled');
+      
+      if (checkError) throw checkError;
+      
+      if (existingAppointments && existingAppointments.length > 0) {
+        toast({
+          title: "Horaire non disponible",
+          description: "Ce créneau vient d'être réservé. Veuillez sélectionner un autre horaire.",
+          variant: "destructive",
+        });
+        // Mettre à jour le formulaire pour forcer le rafraîchissement des créneaux disponibles
+        form.setValue("appointment_time", "");
+        setIsSubmitting(false);
+        return;
+      }
+      
+      // Si le créneau est toujours disponible, insérer le rendez-vous
       const { error } = await supabase.from('appointments').insert({
         service: data.service,
-        appointment_date: format(data.appointment_date, 'yyyy-MM-dd'),
+        appointment_date: formattedDate,
         appointment_time: data.appointment_time,
         first_name: data.first_name,
         last_name: data.last_name,
