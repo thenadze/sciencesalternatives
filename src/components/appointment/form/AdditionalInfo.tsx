@@ -9,6 +9,8 @@ interface AdditionalInfoProps {
 }
 
 export const AdditionalInfo = ({ form }: AdditionalInfoProps) => {
+  const message = form.watch('message');
+
   return (
     <div className="space-y-2">
       <FormField
@@ -28,6 +30,12 @@ export const AdditionalInfo = ({ form }: AdditionalInfoProps) => {
           </FormItem>
         )}
       />
+      {message && (
+        <div className="bg-mystic-800/20 border border-mystic-700/30 rounded-md p-3 text-sm">
+          <p className="text-gray-300">Aperçu de votre message :</p>
+          <p className="text-white">{message}</p>
+        </div>
+      )}
     </div>
   );
 };

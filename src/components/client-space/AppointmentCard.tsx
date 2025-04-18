@@ -1,7 +1,9 @@
+
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Calendar, Clock, CalendarIcon, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 type Appointment = {
@@ -10,7 +12,7 @@ type Appointment = {
   appointment_date: string;
   appointment_time: string;
   status: string;
-  message?: string;
+  message?: string; // Ajout du champ message
 };
 
 type AppointmentCardProps = { 
@@ -67,6 +69,7 @@ export const AppointmentCard = ({
             </div>
           </div>
           
+          {/* Nouvelle section pour afficher un indicateur de message */}
           {appointment.message && (
             <Dialog>
               <DialogTrigger asChild>
