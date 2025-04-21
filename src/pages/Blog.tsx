@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { ArrowRight, Calendar, Clock, Heart, Search, User } from "lucide-react";
 import { ScrollObserver } from "@/components/ui/scroll-observer";
@@ -15,7 +14,8 @@ const Blog = () => {
       date: "12 avril 2025",
       readTime: "5 min",
       author: "Marie Fournier",
-      category: "Reiki"
+      category: "Reiki",
+      slug: "bienfaits-reiki",
     },
     {
       id: 2,
@@ -131,12 +131,15 @@ const Blog = () => {
                         <span>{post.author}</span>
                       </div>
                       <h3 className="text-xl font-cinzel mb-3">
-                        <Link to={`/blog/${post.id}`} className="hover:text-energy-400 transition-colors">
+                        <Link to={post.slug ? `/blog/${post.slug}` : `/blog/${post.id}`} className="hover:text-energy-400 transition-colors">
                           {post.title}
                         </Link>
                       </h3>
                       <p className="text-gray-400 mb-4">{post.excerpt}</p>
-                      <Link to={`/blog/${post.id}`} className="inline-flex items-center text-energy-400 hover:text-energy-300 transition-colors">
+                      <Link
+                        to={post.slug ? `/blog/${post.slug}` : `/blog/${post.id}`}
+                        className="inline-flex items-center text-energy-400 hover:text-energy-300 transition-colors"
+                      >
                         Lire la suite <ArrowRight className="ml-2 h-4 w-4" />
                       </Link>
                     </div>
