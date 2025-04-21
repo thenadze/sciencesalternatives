@@ -2,6 +2,7 @@
 import { ScrollObserver } from "@/components/ui/scroll-observer";
 import { AppointmentForm } from "@/components/appointment/AppointmentForm";
 import { AppointmentFAQ } from "@/components/appointment/FAQ";
+import { GoogleCalendarButton } from "@/components/appointment/GoogleCalendarButton";
 
 const Appointment = () => {
   return (
@@ -39,6 +40,9 @@ const Appointment = () => {
         </div>
       </section>
 
+      {/* Google Calendar Button */}
+      <GoogleCalendarButton />
+
       {/* FAQ */}
       <AppointmentFAQ />
     </div>
@@ -46,4 +50,3 @@ const Appointment = () => {
 };
 
 export default Appointment;
-

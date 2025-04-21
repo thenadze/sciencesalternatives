@@ -3,13 +3,12 @@ import React, { useEffect, useRef } from "react";
 
 /**
  * GoogleCalendarButton
- * Affiche un bouton rendez-vous Google Calendar customisé et centré
+ * Bouton personnalisé pour prise de rendez-vous Google Calendar centré avec couleur #278575 et label "Prendre rendez-vous"
  */
 export const GoogleCalendarButton: React.FC = () => {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Vérifier si le script n'est pas déjà chargé
     if (!document.getElementById("google-calendar-script")) {
       const script = document.createElement("script");
       script.id = "google-calendar-script";
@@ -17,7 +16,6 @@ export const GoogleCalendarButton: React.FC = () => {
       script.async = true;
       document.body.appendChild(script);
 
-      // Une fois chargé, loader le bouton
       script.onload = () => {
         if (window.calendar && ref.current) {
           window.calendar.schedulingButton.load({
@@ -29,7 +27,6 @@ export const GoogleCalendarButton: React.FC = () => {
         }
       };
     } else {
-      // Si déjà chargé, loader directement
       if (window.calendar && ref.current) {
         window.calendar.schedulingButton.load({
           url: "https://calendar.google.com/calendar/appointments/schedules/AcZssZ09Uv8VuZCgx5hcbNcwlVb86OIci5eVEGpEP4rnkqAIqAf87BaE0mvTcagzmGJu4UFt0J3W2wrP?gv=true",
@@ -42,13 +39,13 @@ export const GoogleCalendarButton: React.FC = () => {
   }, []);
 
   return (
-    <section className="flex justify-center my-8">
+    <div className="flex justify-center my-5">
       <div ref={ref} />
-    </section>
+    </div>
   );
 };
 
-// Ajout du type global pour éviter l'erreur TS.
+// Typage global pour éviter les erreurs TS
 declare global {
   interface Window {
     calendar?: any;
