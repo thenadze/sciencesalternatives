@@ -17,7 +17,8 @@ const Services = () => {
         "Renforcement du système immunitaire",
         "Soulagement des douleurs physiques",
         "Harmonisation des centres énergétiques",
-        "Accompagnement dans les périodes de transition"
+        "Accompagnement dans les périodes de transition",
+        "Je suis vraiment un problème avec le back pour connecter le rendez-vous à une base connectée"
       ],
       price: "70€",
       duration: "60 minutes"
