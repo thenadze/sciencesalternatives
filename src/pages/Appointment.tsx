@@ -1,10 +1,7 @@
 
-import { useEffect } from "react";
 import { ScrollObserver } from "@/components/ui/scroll-observer";
 import { AppointmentForm } from "@/components/appointment/AppointmentForm";
 import { AppointmentFAQ } from "@/components/appointment/FAQ";
-import { GoogleCalendarConnect } from "@/components/GoogleCalendarConnect";
-import { Info } from "lucide-react";
 
 const Appointment = () => {
   return (
@@ -16,7 +13,6 @@ const Appointment = () => {
           <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-30 mix-blend-overlay"></div>
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(243,190,89,0.1),transparent_60%)]"></div>
         </div>
-
         <div className="container relative z-10 mx-auto px-6">
           <ScrollObserver>
             <h1 className="text-4xl md:text-5xl font-cinzel mb-6 text-white text-center leading-tight">
@@ -29,19 +25,6 @@ const Appointment = () => {
         </div>
       </section>
 
-      {/* Calendrier Google */}
-      <section className="py-8 bg-mystic-900/60">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col items-center justify-center">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Info className="h-5 w-5 text-energy-400" />
-              <p className="text-gray-300">Synchronisez vos rendez-vous automatiquement avec votre calendrier</p>
-            </div>
-            <GoogleCalendarConnect />
-          </div>
-        </div>
-      </section>
-
       {/* Appointment Form */}
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-6">
@@ -50,7 +33,6 @@ const Appointment = () => {
               <h2 className="text-2xl font-cinzel mb-8 text-center">
                 Planifiez votre <span className="text-energy-400">séance</span>
               </h2>
-              
               <AppointmentForm />
             </div>
           </ScrollObserver>
@@ -64,3 +46,4 @@ const Appointment = () => {
 };
 
 export default Appointment;
+
