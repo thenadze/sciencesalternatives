@@ -15,6 +15,7 @@ import Appointment from "./pages/Appointment";
 import ClientSpace from "./pages/ClientSpace";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import Article from "./pages/Article";
 
 const queryClient = new QueryClient();
 
@@ -31,7 +32,7 @@ const App = () => (
               <Route path="/a-propos" element={<About />} />
               <Route path="/services" element={<Services />} />
               <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/bienfaits-reiki" element={<import("./pages/Article").then(m => m.default)} />
+              <Route path="/blog/bienfaits-reiki" element={<Article />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/rendez-vous" element={<Appointment />} />
               <Route path="/espace-personnel" element={<ClientSpace />} />
