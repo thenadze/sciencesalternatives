@@ -5,8 +5,8 @@ import { Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { GoogleCalendarModal } from "./GoogleCalendarModal";
 
-// Le son court à jouer lors de l'ouverture du toast/modal
-const notificationSound = "/lovable-uploads/9dad576e-49e7-423c-a303-7efc65ba9a54.png"; // Remplacer par un .mp3/.wav approprié !
+// Remplacer par un fichier audio .mp3 approprié
+const notificationSound = "/lovable-uploads/notification-sound.mp3";
 
 export const GoogleCalendarButton: React.FC = () => {
   const { toast } = useToast();
