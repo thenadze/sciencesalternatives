@@ -239,4 +239,33 @@
       filter: blur(0.5px) brightness(1.05);
     }
   }
+
+  /* Ajout d'un cadre vert animé pour le bouton de réservation */
+  .green-energy-card {
+    @apply relative border-2 rounded-xl bg-mystic-900/60 backdrop-blur-lg p-8 shadow-xl border-transparent transition-all duration-500;
+  }
+  .green-energy-card::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    z-index: 0;
+    border-radius: 1rem;
+    background: linear-gradient(120deg, theme('colors.energy.500') 0%, theme('colors.energy.600') 100%);
+    pointer-events: none;
+    opacity: 0.5;
+    transition: opacity 0.4s;
+    animation: green-border-glow 4s ease-in-out infinite;
+  }
+  .green-energy-card:hover::before {
+    opacity: 0.8;
+  }
+
+  @keyframes green-border-glow {
+    0%, 100% {
+      filter: blur(0.5px) brightness(1.05);
+    }
+    50% {
+      filter: blur(2.5px) brightness(1.18);
+    }
+  }
 }
