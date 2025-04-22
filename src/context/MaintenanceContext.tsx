@@ -11,32 +11,11 @@ type MaintenanceContextType = {
 const MaintenanceContext = createContext<MaintenanceContextType | undefined>(undefined);
 
 export function MaintenanceProvider({ children }: { children: React.ReactNode }) {
-  // Initialiser à true pour activer le mode maintenance par défaut
-  const [isInMaintenance, setIsInMaintenance] = useState(true);
-  const [maintenanceMessage, setMaintenanceMessage] = useState(
-    "Site en cours de configuration. Notre site sera bientôt disponible à l'adresse portfolioEnergies.com. Merci de votre patience !"
-  );
+  // Set maintenance mode to false by default
+  const [isInMaintenance, setIsInMaintenance] = useState(false);
+  const [maintenanceMessage, setMaintenanceMessage] = useState('');
 
-  // Vérifier l'état du mode maintenance dans le localStorage lors du chargement
-  useEffect(() => {
-    const storedMaintenanceState = localStorage.getItem('maintenanceMode');
-    const storedMessage = localStorage.getItem('maintenanceMessage');
-    
-    if (storedMaintenanceState !== null) {
-      setIsInMaintenance(JSON.parse(storedMaintenanceState));
-    }
-    
-    if (storedMessage) {
-      setMaintenanceMessage(storedMessage);
-    }
-  }, []);
-
-  // Sauvegarder l'état du mode maintenance dans le localStorage lorsqu'il change
-  useEffect(() => {
-    localStorage.setItem('maintenanceMode', JSON.stringify(isInMaintenance));
-    localStorage.setItem('maintenanceMessage', maintenanceMessage);
-  }, [isInMaintenance, maintenanceMessage]);
-
+  // Remove localStorage checks since we're disabling maintenance mode
   return (
     <MaintenanceContext.Provider
       value={{
