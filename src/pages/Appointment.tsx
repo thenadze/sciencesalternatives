@@ -1,6 +1,5 @@
 
 import { ScrollObserver } from "@/components/ui/scroll-observer";
-import { AppointmentForm } from "@/components/appointment/AppointmentForm";
 import { AppointmentFAQ } from "@/components/appointment/FAQ";
 import { GoogleCalendarButton } from "@/components/appointment/GoogleCalendarButton";
 
@@ -20,36 +19,25 @@ const Appointment = () => {
               Prendre <span className="text-energy-400">rendez-vous</span>
             </h1>
             <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto text-center">
-              Réservez votre séance de soins énergétiques en quelques clics
+              Réservez votre séance de soins énergétiques directement via Google Calendar en 1 clic !
             </p>
           </ScrollObserver>
         </div>
       </section>
 
-      {/* Appointment Form et Google Calendar Button */}
+      {/* Google Calendar Button uniquement */}
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-6">
           <ScrollObserver>
-            <div className="max-w-4xl mx-auto bg-mystic-900/40 backdrop-blur-sm rounded-lg p-8 border border-mystic-800/30">
-              <h2 className="text-2xl font-cinzel mb-8 text-center">
+            <div className="max-w-xl mx-auto bg-mystic-900/40 backdrop-blur-sm rounded-lg p-8 border border-mystic-800/30 text-center">
+              <h2 className="text-2xl font-cinzel mb-8">
                 Planifiez votre <span className="text-energy-400">séance</span>
               </h2>
-              
-              {/* Intégration du bouton Google Calendar avant le formulaire */}
-              <div className="mb-8 text-center">
-                <p className="text-gray-300 mb-4">Réservez directement via Google Calendar :</p>
-                <GoogleCalendarButton />
-              </div>
-              
-              <div className="my-8">
-                <div className="relative flex py-5 items-center">
-                  <div className="flex-grow border-t border-mystic-700"></div>
-                  <span className="flex-shrink mx-4 text-gray-400">ou</span>
-                  <div className="flex-grow border-t border-mystic-700"></div>
-                </div>
-              </div>
-              
-              <AppointmentForm />
+              <p className="text-gray-300 mb-6">
+                Cliquez sur le bouton ci-dessous pour réserver le créneau qui vous convient.<br />
+                Toutes les informations (nom, email, date, horaire...) seront saisies directement depuis l’interface Google Calendar.
+              </p>
+              <GoogleCalendarButton />
             </div>
           </ScrollObserver>
         </div>
