@@ -19,16 +19,7 @@ export const GoogleCalendarButton: React.FC = () => {
     audioRef.current.volume = 0.35;
   }, []);
 
-  // Fermeture automatique après 10 secondes
-  React.useEffect(() => {
-    let timeout: NodeJS.Timeout;
-    if (modalOpen) {
-      timeout = setTimeout(() => {
-        setModalOpen(false);
-      }, 10000);
-    }
-    return () => clearTimeout(timeout);
-  }, [modalOpen]);
+  // Suppression du useEffect de fermeture automatique après 10 secondes
 
   // Jouer un son discret avec gestion des erreurs
   const playSound = () => {
