@@ -19,8 +19,6 @@ export const GoogleCalendarButton: React.FC = () => {
     audioRef.current.volume = 0.35;
   }, []);
 
-  // Suppression du useEffect de fermeture automatique après 10 secondes
-
   // Jouer un son discret avec gestion des erreurs
   const playSound = () => {
     try {
