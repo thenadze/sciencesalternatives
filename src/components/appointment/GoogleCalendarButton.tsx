@@ -1,9 +1,10 @@
 
 import React, { useEffect, useRef } from "react";
+import { EnergyButton } from "@/components/ui/energy-button";
 
 /**
  * GoogleCalendarButton
- * Bouton personnalisé pour prise de rendez-vous Google Calendar centré avec couleur #278575 et label "Prendre rendez-vous"
+ * Bouton personnalisé pour prise de rendez-vous Google Calendar intégré dans le flux de la page
  */
 export const GoogleCalendarButton: React.FC = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -39,8 +40,8 @@ export const GoogleCalendarButton: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex justify-center my-5">
-      <div ref={ref} />
+    <div className="flex justify-center items-center">
+      <div ref={ref} className="inline-block" />
     </div>
   );
 };

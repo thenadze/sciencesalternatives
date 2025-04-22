@@ -26,7 +26,7 @@ const Appointment = () => {
         </div>
       </section>
 
-      {/* Appointment Form */}
+      {/* Appointment Form et Google Calendar Button */}
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-6">
           <ScrollObserver>
@@ -34,14 +34,26 @@ const Appointment = () => {
               <h2 className="text-2xl font-cinzel mb-8 text-center">
                 Planifiez votre <span className="text-energy-400">séance</span>
               </h2>
+              
+              {/* Intégration du bouton Google Calendar avant le formulaire */}
+              <div className="mb-8 text-center">
+                <p className="text-gray-300 mb-4">Réservez directement via Google Calendar :</p>
+                <GoogleCalendarButton />
+              </div>
+              
+              <div className="my-8">
+                <div className="relative flex py-5 items-center">
+                  <div className="flex-grow border-t border-mystic-700"></div>
+                  <span className="flex-shrink mx-4 text-gray-400">ou</span>
+                  <div className="flex-grow border-t border-mystic-700"></div>
+                </div>
+              </div>
+              
               <AppointmentForm />
             </div>
           </ScrollObserver>
         </div>
       </section>
-
-      {/* Google Calendar Button */}
-      <GoogleCalendarButton />
 
       {/* FAQ */}
       <AppointmentFAQ />
