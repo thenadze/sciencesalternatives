@@ -29,15 +29,18 @@ const Appointment = () => {
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-6">
           <ScrollObserver>
-            <div className="max-w-xl mx-auto bg-mystic-900/40 backdrop-blur-sm rounded-lg p-8 border border-mystic-800/30 text-center">
-              <h2 className="text-2xl font-cinzel mb-8">
+            {/* Applique la nouvelle classe animée thématique ici */}
+            <div className="max-w-xl mx-auto energy-card-animated text-center overflow-visible">
+              <h2 className="text-2xl font-cinzel mb-8 relative z-10">
                 Planifiez votre <span className="text-energy-400">séance</span>
               </h2>
-              <p className="text-gray-300 mb-6">
+              <p className="text-gray-300 mb-6 relative z-10">
                 Cliquez sur le bouton ci-dessous pour réserver le créneau qui vous convient.<br />
                 Toutes les informations (nom, email, date, horaire...) seront saisies directement depuis l’interface Google Calendar.
               </p>
-              <GoogleCalendarButton />
+              <div className="relative z-10">
+                <GoogleCalendarButton />
+              </div>
             </div>
           </ScrollObserver>
         </div>
