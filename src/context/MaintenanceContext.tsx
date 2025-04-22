@@ -11,11 +11,12 @@ type MaintenanceContextType = {
 const MaintenanceContext = createContext<MaintenanceContextType | undefined>(undefined);
 
 export function MaintenanceProvider({ children }: { children: React.ReactNode }) {
-  // Set maintenance mode to false by default
+  // Laisser le mode maintenance désactivé par défaut
   const [isInMaintenance, setIsInMaintenance] = useState(false);
-  const [maintenanceMessage, setMaintenanceMessage] = useState('');
+  const [maintenanceMessage, setMaintenanceMessage] = useState(
+    "Site en cours de configuration. Notre site sera bientôt disponible. Merci de votre patience !"
+  );
 
-  // Remove localStorage checks since we're disabling maintenance mode
   return (
     <MaintenanceContext.Provider
       value={{

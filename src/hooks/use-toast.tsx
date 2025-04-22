@@ -74,7 +74,7 @@ function reducer(state: State, action: ActionType): State {
   }
 }
 
-export function ToastProviderInternal({ children }: { children: React.ReactNode }) {
+export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = React.useReducer(reducer, { toasts: [] });
 
   // Expose API for child components
