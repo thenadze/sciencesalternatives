@@ -11,6 +11,13 @@ const notificationSound = "/lovable-uploads/9dad576e-49e7-423c-a303-7efc65ba9a54
 export const GoogleCalendarButton: React.FC = () => {
   const { toast } = useToast();
   const [modalOpen, setModalOpen] = React.useState(false);
+  const audioRef = React.useRef<HTMLAudioElement | null>(null);
+
+  // Initialiser l'audio une seule fois
+  React.useEffect(() => {
+    audioRef.current = new Audio(notificationSound);
+    audioRef.current.volume = 0.35;
+  }, []);
 
   // Fermeture automatique après 10 secondes
   React.useEffect(() => {
@@ -23,11 +30,17 @@ export const GoogleCalendarButton: React.FC = () => {
     return () => clearTimeout(timeout);
   }, [modalOpen]);
 
-  // Jouer un son discret
+  // Jouer un son discret avec gestion des erreurs
   const playSound = () => {
-    const audio = new Audio(notificationSound);
-    audio.volume = 0.35;
-    audio.play().catch(() => {});
+    try {
+      if (audioRef.current) {
+        audioRef.current.play().catch(error => {
+          console.warn("Audio play failed:", error);
+        });
+      }
+    } catch (error) {
+      console.warn("Sound playing error:", error);
+    }
   };
 
   // Ouvre la modal et affiche un toast + son
