@@ -3,30 +3,33 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { GoogleCalendarModal } from "./GoogleCalendarModal";
 
 export const GoogleCalendarButton: React.FC = () => {
   const { toast } = useToast();
-  const calendarUrl = "https://calendar.google.com/calendar/appointments/schedules/AcZssZ09Uv8VuZCgx5hcbNcwlVb86OIci5eVEGpEP4rnkqAIqAf87BaE0mvTcagzmGJu4UFt0J3W2wrP?gv=true";
+  const [modalOpen, setModalOpen] = React.useState(false);
 
-  const handleCalendarOpen = () => {
-    window.open(calendarUrl, '_blank');
-    
+  // Ouvre la modal et affiche un toast
+  const handleOpenCalendar = () => {
+    setModalOpen(true);
     toast({
       title: "Réservation de rendez-vous",
-      description: "Votre navigateur s'est ouvert sur Google Calendar. Veuillez compléter votre réservation.",
-      duration: 5000
+      description:
+        "Complétez votre réservation dans la fenêtre Google Calendar qui vient de s’ouvrir.",
+      duration: 5000,
     });
   };
 
   return (
-    <div className="flex justify-center items-center">
-      <Button 
+    <div className="flex flex-col justify-center items-center">
+      <Button
         className="bg-gradient-to-r from-mystic-400/80 to-mystic-500/80 hover:from-mystic-400/90 hover:to-mystic-500/90 text-white font-cinzel font-medium py-2 px-4 rounded-xl flex items-center gap-2 transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
-        onClick={handleCalendarOpen}
+        onClick={handleOpenCalendar}
       >
         <Calendar size={20} className="text-white/80" />
         Prendre rendez-vous
       </Button>
+      <GoogleCalendarModal open={modalOpen} onOpenChange={setModalOpen} />
     </div>
   );
 };
