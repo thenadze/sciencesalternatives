@@ -5,8 +5,9 @@ import type {
   ToastProps,
 } from "@/components/ui/toast"
 
+// Modification : Augmenter considérablement le délai de suppression à un très grand nombre
 const TOAST_LIMIT = 1
-const TOAST_REMOVE_DELAY = 1000000
+const TOAST_REMOVE_DELAY = 1000000000 // Un délai extrêmement long, presque infini
 
 type ToasterToast = ToastProps & {
   id: string
@@ -60,6 +61,7 @@ const addToRemoveQueue = (toastId: string) => {
     return
   }
 
+  // Modification : Délai très long avant suppression
   const timeout = setTimeout(() => {
     toastTimeouts.delete(toastId)
     dispatch({
@@ -147,23 +149,21 @@ function toast({ ...props }: Toast) {
       type: "UPDATE_TOAST",
       toast: { ...props, id },
     })
-  const dismiss = () => dispatch({ type: "DISMISS_TOAST", toastId: id })
-
+  
+  // Modification : Retirer la fonction dismiss pour empêcher la fermeture automatique
   dispatch({
     type: "ADD_TOAST",
     toast: {
       ...props,
       id,
       open: true,
-      onOpenChange: (open) => {
-        if (!open) dismiss()
-      },
+      // Supprimer la fonction onOpenChange qui fermait automatiquement le toast
     },
   })
 
   return {
     id: id,
-    dismiss,
+    // Supprimer la méthode dismiss
     update,
   }
 }
