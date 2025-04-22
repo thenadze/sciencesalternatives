@@ -240,3 +240,29 @@
     }
   }
 }
+
+@layer components {
+  /* Anim toast personnalisée */
+  @keyframes toast-pop {
+    0% {
+      transform: scale(0.85) translateY(40px);
+      opacity: 0;
+      filter: blur(4px);
+    }
+    70% {
+      transform: scale(1.04) translateY(-7px);
+      opacity: 1;
+      filter: blur(0);
+    }
+    100% {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+      filter: blur(0);
+    }
+  }
+
+  .animate-toast-pop {
+    animation: toast-pop 0.7s cubic-bezier(0.23, 1.07, 0.52, 0.98);
+    will-change: transform, opacity, filter;
+  }
+}

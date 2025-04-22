@@ -5,18 +5,35 @@ import { Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { GoogleCalendarModal } from "./GoogleCalendarModal";
 
+// Le son court à jouer lors de l'ouverture du toast/modal
+const notificationSound = "/lovable-uploads/9dad576e-49e7-423c-a303-7efc65ba9a54.png"; // Remplacer par un .mp3/.wav approprié !
+
 export const GoogleCalendarButton: React.FC = () => {
   const { toast } = useToast();
   const [modalOpen, setModalOpen] = React.useState(false);
 
-  // Ouvre la modal et affiche un toast
+  // Jouer un son discret
+  const playSound = () => {
+    const audio = new Audio(notificationSound);
+    audio.volume = 0.35;
+    audio.play().catch(() => {});
+  };
+
+  // Ouvre la modal et affiche un toast + son
   const handleOpenCalendar = () => {
     setModalOpen(true);
+    playSound();
     toast({
-      title: "Réservation de rendez-vous",
-      description:
-        "Complétez votre réservation dans la fenêtre Google Calendar qui vient de s’ouvrir.",
-      duration: 5000,
+      title: (
+        <span className="font-cinzel text-base animate-toast-pop">Réservation de rendez-vous</span>
+      ),
+      description: (
+        <span className="animate-toast-pop">
+          Complétez votre réservation dans la fenêtre Google Calendar qui vient de s’ouvrir.
+        </span>
+      ),
+      duration: 10000,
+      className: "animate-toast-pop"
     });
   };
 
