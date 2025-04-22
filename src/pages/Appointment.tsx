@@ -1,3 +1,4 @@
+
 import { ScrollObserver } from "@/components/ui/scroll-observer";
 import { AppointmentFAQ } from "@/components/appointment/FAQ";
 import { GoogleCalendarButton } from "@/components/appointment/GoogleCalendarButton";
@@ -28,7 +29,7 @@ const Appointment = () => {
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-6">
           <ScrollObserver>
-            <div className="max-w-xl mx-auto green-energy-card text-center overflow-visible">
+            <div className="max-w-xl mx-auto energy-card-animated text-center overflow-visible">
               <h2 className="text-2xl font-cinzel mb-8 relative z-10">
                 Planifiez votre <span className="text-energy-400">séance</span>
               </h2>
