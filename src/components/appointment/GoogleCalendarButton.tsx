@@ -12,6 +12,17 @@ export const GoogleCalendarButton: React.FC = () => {
   const { toast } = useToast();
   const [modalOpen, setModalOpen] = React.useState(false);
 
+  // Fermeture automatique après 10 secondes
+  React.useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (modalOpen) {
+      timeout = setTimeout(() => {
+        setModalOpen(false);
+      }, 10000);
+    }
+    return () => clearTimeout(timeout);
+  }, [modalOpen]);
+
   // Jouer un son discret
   const playSound = () => {
     const audio = new Audio(notificationSound);
@@ -24,14 +35,8 @@ export const GoogleCalendarButton: React.FC = () => {
     setModalOpen(true);
     playSound();
     toast({
-      title: (
-        <span className="font-cinzel text-base animate-toast-pop">Réservation de rendez-vous</span>
-      ),
-      description: (
-        <span className="animate-toast-pop">
-          Complétez votre réservation dans la fenêtre Google Calendar qui vient de s’ouvrir.
-        </span>
-      ),
+      title: "Réservation de rendez-vous",
+      description: "Complétez votre réservation dans la fenêtre Google Calendar qui vient de s'ouvrir.",
       duration: 10000,
       className: "animate-toast-pop"
     });
