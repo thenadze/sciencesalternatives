@@ -15,38 +15,48 @@ export const IntroAnimation = () => {
     }
 
     // Set timer for animation duration
-    const displayDuration = 3000; // 3 secondes pour l'affichage principal
-    const fadeOutDuration = 1500; // 1.5 secondes pour le fondu
+    const displayDuration = 3000; // 3 seconds for main display
+    const fadeOutDuration = 1500; // 1.5 seconds for fade out
     
-    // Marquer l'animation comme vue
+    // Mark animation as seen
     sessionStorage.setItem('introAnimationSeen', 'true');
     
-    // Première étape : attendre la durée d'affichage puis déclencher le fondu
+    // First step: Wait for display duration then trigger fade out
     const displayTimer = setTimeout(() => {
-      // Lancer le fade-out en modifiant l'état (cela déclenche l'animation exit de framer-motion)
+      // Start fade-out by changing state (this triggers framer-motion exit animation)
       setIsVisible(false);
       
-      // Seconde étape : attendre la fin de l'animation de fondu avant de scroller
+      // Second step: Wait for fade-out animation to complete before scrolling
       setTimeout(() => {
-        // Localiser précisément la section d'accueil
+        // Temporarily disable user scroll during automatic scrolling
+        document.body.style.overflow = 'hidden';
+        
+        // Locate the accueil section precisely
         const accueilSection = document.getElementById('accueil');
         
         if (accueilSection) {
-          // Utiliser window.scrollTo pour un défilement fluide
-          window.scrollTo({
-            top: accueilSection.offsetTop,
-            behavior: 'smooth'
+          // Use scrollIntoView with smooth behavior for fluid transition
+          accueilSection.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start' 
           });
+          
+          // Re-enable user scrolling after animation completes
+          setTimeout(() => {
+            document.body.style.overflow = '';
+          }, 1000); // Allow 1s for the scroll animation to complete
         }
-      }, fadeOutDuration); // Attendre que le fade-out soit presque terminé
+      }, fadeOutDuration); // Wait for fade-out to complete
       
     }, displayDuration);
 
     return () => {
       clearTimeout(displayTimer);
+      document.body.style.overflow = ''; // Ensure scroll is re-enabled if component unmounts
     };
   }, []);
 
+  // Don't render anything if not visible
   if (!isVisible) return null;
 
   return (
