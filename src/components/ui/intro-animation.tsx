@@ -16,15 +16,27 @@ export const IntroAnimation = () => {
 
     // Set timer for animation duration
     const timer = setTimeout(() => {
-      setIsVisible(false);
+      // Marquer l'animation comme vue mais la garder visible pendant la transition
       sessionStorage.setItem('introAnimationSeen', 'true');
       
-      // Scroll to #accueil section after animation
+      // Transition douce vers la section d'accueil
       const element = document.getElementById('accueil');
       if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+        // Animation de fade-out avant le scroll
+        const fadeOutDuration = 1000; // 1 seconde pour le fade out
+        
+        // Démarrer la transition en douceur
+        setTimeout(() => {
+          setIsVisible(false);
+          element.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }, fadeOutDuration);
+      } else {
+        setIsVisible(false);
       }
-    }, 3000);
+    }, 3000); // Animation de 3 secondes
 
     return () => clearTimeout(timer);
   }, []);
@@ -35,7 +47,7 @@ export const IntroAnimation = () => {
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
+        exit={{ opacity: 0, transition: { duration: 1.5, ease: 'easeInOut' } }}
         transition={{ duration: 1, ease: 'easeOut' }}
         className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-mystic-950"
       >
