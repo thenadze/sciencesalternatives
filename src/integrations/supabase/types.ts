@@ -75,6 +75,134 @@ export type Database = {
         }
         Relationships: []
       }
+      quotes: {
+        Row: {
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          license_plate: string | null
+          message: string | null
+          phone: string
+          service_id: string | null
+          status: string
+          updated_at: string
+          vehicle_model: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          license_plate?: string | null
+          message?: string | null
+          phone: string
+          service_id?: string | null
+          status?: string
+          updated_at?: string
+          vehicle_model?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          license_plate?: string | null
+          message?: string | null
+          phone?: string
+          service_id?: string | null
+          status?: string
+          updated_at?: string
+          vehicle_model?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quotes_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      services: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          image_url: string | null
+          price: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          image_url?: string | null
+          price: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string | null
+          price?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      vehicles: {
+        Row: {
+          brand: string
+          created_at: string
+          description: string
+          fuel_type: string
+          id: string
+          image_url: string | null
+          is_sold: boolean
+          mileage: number
+          model: string
+          price: number
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          brand: string
+          created_at?: string
+          description: string
+          fuel_type: string
+          id?: string
+          image_url?: string | null
+          is_sold?: boolean
+          mileage: number
+          model: string
+          price: number
+          updated_at?: string
+          year: number
+        }
+        Update: {
+          brand?: string
+          created_at?: string
+          description?: string
+          fuel_type?: string
+          id?: string
+          image_url?: string | null
+          is_sold?: boolean
+          mileage?: number
+          model?: string
+          price?: number
+          updated_at?: string
+          year?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

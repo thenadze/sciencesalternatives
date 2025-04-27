@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -6,58 +5,48 @@ import { useNavigate } from 'react-router-dom';
 export const IntroAnimation = () => {
   const [isVisible, setIsVisible] = useState(true);
   const navigate = useNavigate();
-
+  
   useEffect(() => {
-    // Check if animation has been shown before
     if (sessionStorage.getItem('introAnimationSeen')) {
       setIsVisible(false);
       return;
     }
 
-    // Set timer for animation duration
-    const displayDuration = 3000; // 3 seconds for main display
-    const fadeOutDuration = 1500; // 1.5 seconds for fade out
+    const displayDuration = 3000;
+    const fadeOutDuration = 1500;
     
-    // Mark animation as seen
     sessionStorage.setItem('introAnimationSeen', 'true');
     
-    // First step: Wait for display duration then trigger fade out
     const displayTimer = setTimeout(() => {
-      // Start fade-out by changing state (this triggers framer-motion exit animation)
       setIsVisible(false);
       
-      // Second step: Wait for fade-out animation to complete before scrolling
       setTimeout(() => {
-        // Temporarily disable user scroll during automatic scrolling
         document.body.style.overflow = 'hidden';
         
-        // Locate the accueil section precisely
         const accueilSection = document.getElementById('accueil');
         
         if (accueilSection) {
-          // Use scrollIntoView with smooth behavior for fluid transition
           accueilSection.scrollIntoView({ 
             behavior: 'smooth',
             block: 'start' 
           });
           
-          // Re-enable user scrolling after animation completes
           setTimeout(() => {
             document.body.style.overflow = '';
-          }, 1000); // Allow 1s for the scroll animation to complete
+          }, 1000);
         }
-      }, fadeOutDuration); // Wait for fade-out to complete
-      
+      }, fadeOutDuration);
     }, displayDuration);
 
     return () => {
       clearTimeout(displayTimer);
-      document.body.style.overflow = ''; // Ensure scroll is re-enabled if component unmounts
+      document.body.style.overflow = '';
     };
   }, []);
 
-  // Don't render anything if not visible
   if (!isVisible) return null;
+
+  const energieTextArray = "ÉNERGIE".split("");
 
   return (
     <AnimatePresence>
@@ -68,7 +57,6 @@ export const IntroAnimation = () => {
           transition={{ duration: 1, ease: 'easeOut' }}
           className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-mystic-950"
         >
-          {/* Floating particles background */}
           <div className="absolute inset-0">
             {[...Array(20)].map((_, i) => (
               <motion.div
@@ -93,7 +81,6 @@ export const IntroAnimation = () => {
             ))}
           </div>
 
-          {/* Energy waves */}
           <motion.div
             className="absolute inset-0"
             initial={{ opacity: 0 }}
@@ -104,7 +91,6 @@ export const IntroAnimation = () => {
           </motion.div>
 
           <div className="relative">
-            {/* Enhanced energy aura */}
             <div className="absolute inset-0 blur-[100px] bg-gradient-to-r from-energy-400/20 via-mystic-400/20 to-energy-400/20 animate-pulse-slow rounded-full" />
             <div className="absolute inset-0 blur-3xl bg-gradient-to-r from-energy-400/30 to-mystic-400/30 animate-pulse-glow" />
             
@@ -113,22 +99,29 @@ export const IntroAnimation = () => {
               animate={{ 
                 scale: 1, 
                 opacity: 1,
-                textShadow: ["0 0 10px rgba(243,190,89,0.3)", "0 0 20px rgba(243,190,89,0.5)", "0 0 10px rgba(243,190,89,0.3)"]
               }}
               transition={{ 
                 duration: 0.8,
                 ease: "easeOut",
-                textShadow: {
-                  duration: 2,
-                  repeat: Infinity,
-                  repeatType: "reverse"
-                }
               }}
               className="relative text-4xl md:text-6xl lg:text-7xl font-cinzel text-white text-center uppercase tracking-widest leading-relaxed"
             >
               Révélez votre{' '}
-              <span className="bg-gradient-to-r from-energy-400 via-mystic-400 to-energy-400 text-transparent bg-clip-text font-semibold">
-                énergie
+              <span className="inline-flex bg-gradient-to-r from-energy-400 via-mystic-400 to-energy-400 text-transparent bg-clip-text font-semibold">
+                {energieTextArray.map((letter, index) => (
+                  <motion.span
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.5,
+                      delay: 0.8 + index * 0.1,
+                      ease: "easeOut"
+                    }}
+                  >
+                    {letter}
+                  </motion.span>
+                ))}
               </span>{' '}
               intérieure
             </motion.h1>
